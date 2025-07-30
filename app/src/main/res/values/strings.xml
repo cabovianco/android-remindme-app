@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">RemindMe</string>
     <string name="app_description">Simple. Private. Offline.</string>
+    <string name="welcome_screen_start_button">Get started</string>
+    <string name="post_notifications_permission_title">Allow notifications</string>
+    <string name="post_notifications_permission_description">Get timely reminders, even when the app is closed.</string>
+    <string name="post_notifications_permission_toast">Permission can only be disabled in device settings.</string>
+    <string name="permissions_screen_accept_button">Continue</string>
 </resources>
