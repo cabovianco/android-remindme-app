@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_RemindMe)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
