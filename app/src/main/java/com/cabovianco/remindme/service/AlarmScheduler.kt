@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import com.cabovianco.remindme.domain.model.Reminder
 import com.cabovianco.remindme.notification.NotificationReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,16 +32,19 @@ class AlarmScheduler @Inject constructor(
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-            Log.d(alarmSchedulerTag, "Permission to schedule exact alarms is required.")
-            throw IllegalStateException()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                reminder.dateTime.toInstant().toEpochMilli(),
+                pendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                reminder.dateTime.toInstant().toEpochMilli(),
+                pendingIntent
+            )
         }
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            reminder.dateTime.toInstant().toEpochMilli(),
-            pendingIntent
-        )
     }
 
     fun cancel(id: Int) {
