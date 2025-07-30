@@ -2,10 +2,6 @@ package com.cabovianco.remindme.domain.model
 
 import java.time.ZonedDateTime
 
-enum class RepeatType {
-    NEVER, DAILY, WEEKLY, MONTHLY, YEARLY
-}
-
 sealed class Repeat {
     abstract fun nextDate(from: ZonedDateTime): ZonedDateTime
 
@@ -28,12 +24,4 @@ sealed class Repeat {
     object Yearly : Repeat() {
         override fun nextDate(from: ZonedDateTime): ZonedDateTime = from.plusYears(1)
     }
-}
-
-fun RepeatType.toRepeat() = when (this) {
-    RepeatType.NEVER -> Repeat.Never
-    RepeatType.DAILY -> Repeat.Daily
-    RepeatType.WEEKLY -> Repeat.Weekly
-    RepeatType.MONTHLY -> Repeat.Monthly
-    RepeatType.YEARLY -> Repeat.Yearly
 }

@@ -4,11 +4,11 @@ import com.cabovianco.remindme.data.local.entity.ReminderEntity
 import java.time.ZonedDateTime
 
 data class Reminder(
-    val id: Int = 0,
+    val id: Int,
     val title: String,
-    val description: String? = null,
+    val description: String?,
     val dateTime: ZonedDateTime,
-    val repeat: RepeatType
+    val repeat: Repeat
 )
 
 fun Reminder.toEntity() = ReminderEntity(id, title, description, dateTime, repeat)

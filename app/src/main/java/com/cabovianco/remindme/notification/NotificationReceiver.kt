@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.cabovianco.remindme.domain.model.Repeat
-import com.cabovianco.remindme.domain.model.toRepeat
 import com.cabovianco.remindme.domain.usecase.GetReminderByIdUseCase
 import com.cabovianco.remindme.service.AlarmScheduler
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +29,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
             notificationHelper.showNotification(id, reminder.title, reminder.description)
 
-            val repeat = reminder.repeat.toRepeat()
+            val repeat = reminder.repeat
             if (repeat !is Repeat.Never) {
                 val nextDateTime = repeat.nextDate(ZonedDateTime.now())
                 val nextReminder = reminder.copy(dateTime = nextDateTime)
