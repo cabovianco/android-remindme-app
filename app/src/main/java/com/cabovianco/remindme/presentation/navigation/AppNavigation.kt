@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cabovianco.remindme.presentation.ui.screen.PermissionScreen
 import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 
 @Composable
@@ -51,7 +52,12 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(route = Screen.PermissionScreen.route) {
-
+            if (navToPermissionScreen) {
+                PermissionScreen(
+                    onAccept = { navController.navigate(Screen.MainScreen.route) },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
 
         composable(route = Screen.MainScreen.route) {
