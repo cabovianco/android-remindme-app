@@ -27,10 +27,10 @@ class ReminderRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateReminder(reminder: Reminder): Result<Long> {
+    override suspend fun updateReminder(reminder: Reminder): Result<Unit> {
         return try {
-            val id = reminderDao.update(reminder.toEntity())
-            Result.success(id)
+            reminderDao.update(reminder.toEntity())
+            Result.success(Unit)
         } catch (e: Exception) {
             Log.d(reminderRepositoryTag, "Error: ${e.message}")
             Result.failure(e)

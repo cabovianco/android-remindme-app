@@ -16,7 +16,7 @@ interface ReminderDao {
     suspend fun insert(reminder: ReminderEntity): Long
 
     @Update
-    suspend fun update(reminder: ReminderEntity): Long
+    suspend fun update(reminder: ReminderEntity)
 
     @Query("SELECT * FROM reminders WHERE id = :id")
     fun getById(id: Int): Flow<ReminderEntity?>

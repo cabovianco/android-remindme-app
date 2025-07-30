@@ -7,7 +7,7 @@ import java.time.ZonedDateTime
 interface ReminderRepository {
     suspend fun insertReminder(reminder: Reminder): Result<Long>
 
-    suspend fun updateReminder(reminder: Reminder): Result<Long>
+    suspend fun updateReminder(reminder: Reminder): Result<Unit>
 
     fun getReminderById(id: Int): Flow<Reminder?>
 
