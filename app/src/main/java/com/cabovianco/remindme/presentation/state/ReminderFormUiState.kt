@@ -9,5 +9,5 @@ data class ReminderFormUiState(
     val reminderDescription: String? = null,
     val reminderDateTime: ZonedDateTime = ZonedDateTime.now(),
     val reminderRepeat: Repeat = Repeat.Never,
-    val isReminderValid: Boolean = false
+    val isReminderValid: Boolean = true
 )

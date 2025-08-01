@@ -3,6 +3,7 @@ package com.cabovianco.remindme.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.cabovianco.remindme.domain.usecase.GetReminderByIdUseCase
 import com.cabovianco.remindme.domain.usecase.UpdateReminderUseCase
+import com.cabovianco.remindme.service.AlarmScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
@@ -12,7 +13,8 @@ import javax.inject.Inject
 @HiltViewModel
 class EditReminderViewModel @Inject constructor(
     private val getReminderByIdUseCase: GetReminderByIdUseCase,
-    private val updateReminderUseCase: UpdateReminderUseCase
+    private val updateReminderUseCase: UpdateReminderUseCase,
+    private val alarmScheduler: AlarmScheduler
 ) : ReminderFormViewModel() {
     fun loadReminder(id: Int) {
         viewModelScope.launch {
@@ -34,16 +36,16 @@ class EditReminderViewModel @Inject constructor(
         }
     }
 
-    fun saveReminder(): Boolean {
+    fun saveReminder() {
         val reminder = createReminder()
-        if (reminder == null) {
-            return false
-        }
 
         viewModelScope.launch {
-            updateReminderUseCase(reminder)
-        }
+            val result = updateReminderUseCase(reminder)
+            if (result.isFailure) {
+                return@launch
+            }
 
-        return true
+            alarmScheduler.schedule(reminder)
+        }
     }
 }

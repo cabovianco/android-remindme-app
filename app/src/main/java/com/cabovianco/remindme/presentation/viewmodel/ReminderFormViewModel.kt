@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 open class ReminderFormViewModel : ViewModel() {
     protected val mutableUiState: MutableStateFlow<ReminderFormUiState> =
@@ -16,30 +17,40 @@ open class ReminderFormViewModel : ViewModel() {
     val uiState get() = mutableUiState.asStateFlow()
 
     fun onReminderTitleChange(title: String) {
-        mutableUiState.update { it.copy(reminderTitle = title) }
+        mutableUiState.update {
+            it.copy(
+                reminderTitle = title,
+                isReminderValid = title.isNotBlank()
+            )
+        }
     }
 
     fun onReminderDescriptionChange(description: String) {
         mutableUiState.update { it.copy(reminderDescription = description) }
     }
 
-    fun onReminderDateChange(selectedDateMillis: Long?) {
-        if (selectedDateMillis == null) {
-            return
-        }
+    fun onReminderDateChange(selectedDateMillis: Long) {
+        val utcDateTime = ZonedDateTime.ofInstant(
+            Instant.ofEpochMilli(selectedDateMillis),
+            ZoneId.of("UTC")
+        )
 
-        val localDateTime = Instant.ofEpochMilli(selectedDateMillis)
-            .atZone(ZoneId.systemDefault())
+        val localDateTime = utcDateTime.withZoneSameInstant(ZoneId.systemDefault())
+            .withYear(utcDateTime.year)
+            .withMonth(utcDateTime.monthValue)
+            .withDayOfMonth(utcDateTime.dayOfMonth)
+            .withHour(mutableUiState.value.reminderDateTime.hour)
+            .withMinute(mutableUiState.value.reminderDateTime.minute)
 
         mutableUiState.update { it.copy(reminderDateTime = localDateTime) }
     }
 
-    fun onReminderTimeChange(hour: Int?, minute: Int?) {
+    fun onReminderTimeChange(hour: Int, minute: Int) {
         mutableUiState.update {
             it.copy(
                 reminderDateTime = it.reminderDateTime
-                    .withHour(hour ?: 0)
-                    .withMinute(minute ?: 0)
+                    .withHour(hour)
+                    .withMinute(minute)
             )
         }
     }
@@ -55,19 +66,13 @@ open class ReminderFormViewModel : ViewModel() {
         return isValid
     }
 
-    fun createReminder(): Reminder? {
-        if (!mutableUiState.value.isReminderValid) {
-            return null
-        }
-
-        return with(mutableUiState.value) {
-            Reminder(
-                id = reminderId,
-                title = reminderTitle,
-                description = reminderDescription,
-                dateTime = reminderDateTime,
-                repeat = reminderRepeat
-            )
-        }
+    fun createReminder() = with(mutableUiState.value) {
+        Reminder(
+            id = reminderId,
+            title = reminderTitle,
+            description = reminderDescription,
+            dateTime = reminderDateTime,
+            repeat = reminderRepeat
+        )
     }
 }
