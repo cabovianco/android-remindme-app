@@ -6,4 +6,16 @@
     <string name="post_notifications_permission_description">Get timely reminders, even when the app is closed.</string>
     <string name="post_notifications_permission_toast">Permission can only be disabled in device settings.</string>
     <string name="permissions_screen_accept_button">Continue</string>
+    <string name="title_label">Title</string>
+    <string name="description_label">Description</string>
+    <string name="add_text_button">Add</string>
+    <string name="time_label">Time</string>
+    <string name="calendar_label">Calendar</string>
+    <string name="date_format">MM/dd/yyyy</string>
+    <string name="repeat_label">Repeat</string>
+    <string name="repeat_never">Never</string>
+    <string name="repeat_daily">Daily</string>
+    <string name="repeat_weekly">Weekly</string>
+    <string name="repeat_monthly">Monthly</string>
+    <string name="repeat_yearly">Yearly</string>
 </resources>
