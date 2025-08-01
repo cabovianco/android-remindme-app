@@ -25,3 +25,11 @@ sealed class Repeat {
         override fun nextDate(from: ZonedDateTime): ZonedDateTime = from.plusYears(1)
     }
 }
+
+fun Repeat.toRepeatType() = when (this) {
+    Repeat.Never -> RepeatType.NEVER
+    Repeat.Daily -> RepeatType.DAILY
+    Repeat.Weekly -> RepeatType.WEEKLY
+    Repeat.Monthly -> RepeatType.MONTHLY
+    Repeat.Yearly -> RepeatType.YEARLY
+}

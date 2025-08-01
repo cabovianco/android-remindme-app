@@ -11,4 +11,4 @@ data class Reminder(
     val repeat: Repeat
 )
 
-fun Reminder.toEntity() = ReminderEntity(id, title, description, dateTime, repeat)
+fun Reminder.toEntity() = ReminderEntity(id, title, description, dateTime, repeat.toRepeatType())
