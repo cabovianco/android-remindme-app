@@ -1,8 +1,13 @@
 package com.cabovianco.remindme.presentation.navigation
 
 import android.os.Build
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,36 +64,82 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                         else Screen.MainScreen.route
                     )
                 },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             )
         }
 
-        composable(route = Screen.PermissionScreen.route) {
+        composable(
+            route = Screen.PermissionScreen.route,
+            enterTransition = {
+                slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+        ) {
             if (navToPermissionScreen) {
                 PermissionScreen(
-                    onAccept = { navController.navigate(Screen.MainScreen.route) },
-                    modifier = Modifier.fillMaxSize()
+                    onAccept = {
+                        navController.popBackStack(
+                            route = Screen.WelcomeScreen.route,
+                            inclusive = true
+                        )
+                        navController.navigate(Screen.MainScreen.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
                 )
             }
         }
 
-        composable(route = Screen.MainScreen.route) {
+        composable(
+            route = Screen.MainScreen.route,
+            enterTransition = {
+                if (initialState.destination.route == Screen.PermissionScreen.route) {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+                } else {
+                    EnterTransition.None
+                }
+            },
+            exitTransition = { ExitTransition.KeepUntilTransitionsFinished }
+        ) {
             val mainViewModel: MainViewModel = hiltViewModel()
             val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
 
             MainScreen(
                 onAddReminderButtonClick = { navController.navigate(Screen.AddReminderScreen.route) },
-                onEditReminderClick = { navController.navigate(Screen.EditReminderScreen.createRoute(it)) },
+                onEditReminderClick = {
+                    navController.navigate(
+                        Screen.EditReminderScreen.createRoute(it)
+                    )
+                },
                 onDeleteReminderClick = { mainViewModel.deleteReminder(it) },
                 onBackDaySelectorButtonClick = { mainViewModel.moveDateRangeBack() },
                 onForwardDaySelectorButtonClick = { mainViewModel.moveDateRangeForward() },
                 selectableDays = uiState.selectableDays,
                 remindersUiState = uiState.remindersUiState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             )
         }
 
-        composable(route = Screen.AddReminderScreen.route) {
+        composable(
+            route = Screen.AddReminderScreen.route,
+            enterTransition = {
+                if (initialState.destination.route == Screen.MainScreen.route) {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+                } else {
+                    EnterTransition.None
+                }
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+        ) {
             val addReminderViewModel: AddReminderViewModel = hiltViewModel()
             val uiState by addReminderViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -115,13 +166,25 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                 isReminderValid = uiState.isReminderValid,
                 repeat = uiState.reminderRepeat,
                 onRepeatChange = { addReminderViewModel.onReminderRepeatChange(it) },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             )
         }
 
         composable(
             route = Screen.EditReminderScreen.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            arguments = listOf(navArgument("id") { type = NavType.IntType }),
+            enterTransition = {
+                if (initialState.destination.route == Screen.MainScreen.route) {
+                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+                } else {
+                    EnterTransition.None
+                }
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
         ) { backStackEntry ->
             val reminderId = backStackEntry.arguments?.getInt("id") ?: -1
 
@@ -153,7 +216,9 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                 isReminderValid = uiState.isReminderValid,
                 repeat = uiState.reminderRepeat,
                 onRepeatChange = { editReminderViewModel.onReminderRepeatChange(it) },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
             )
         }
     }
