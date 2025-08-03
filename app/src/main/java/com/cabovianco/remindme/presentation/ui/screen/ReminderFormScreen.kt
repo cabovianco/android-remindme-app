@@ -1,5 +1,10 @@
 package com.cabovianco.remindme.presentation.ui.screen
 
+import android.app.AlarmManager
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
@@ -38,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -124,6 +132,15 @@ fun ReminderFormScreen(
     }
 }
 
+private fun hasExactAlarmPermission(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.canScheduleExactAlarms()
+    } else {
+        true
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopBar(
@@ -131,6 +148,21 @@ private fun TopBar(
     onConfirmButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    var showPermissionDialog by rememberSaveable { mutableStateOf(false) }
+    if (showPermissionDialog) {
+        PermissionDialog(
+            onDismiss = { showPermissionDialog = false },
+            onConfirm = {
+                showPermissionDialog = false
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                    context.startActivity(intent)
+                }
+            }
+        )
+    }
+
     TopAppBar(
         modifier = modifier,
         title = {},
@@ -152,7 +184,13 @@ private fun TopBar(
                 }
 
                 FilledIconButton(
-                    onClick = { onConfirmButtonClick() }
+                    onClick = {
+                        if (hasExactAlarmPermission(context)) {
+                            onConfirmButtonClick()
+                        } else {
+                            showPermissionDialog = true
+                        }
+                    }
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.confirm),
@@ -163,6 +201,27 @@ private fun TopBar(
         },
         windowInsets = WindowInsets(top = 0.dp),
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+    )
+}
+
+@Composable
+private fun PermissionDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        modifier = modifier,
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.set_exact_alarm_permission_dialog_title)) },
+        text = { Text(text = stringResource(R.string.set_exact_alarm_permission_dialog_description)) },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm
+            ) {
+                Text(text = stringResource(R.string.set_exact_alarm_permission_dialog_button))
+            }
+        }
     )
 }
 
@@ -341,7 +400,7 @@ private fun ReminderDate(
                     showModeToggle = false,
                     title = null,
                     headline = null,
-                    colors = DatePickerDefaults.colors(containerColor = Color.Transparent)
+                    colors = DatePickerDefaults.colors(containerColor = BottomSheetDefaults.ContainerColor)
                 )
 
                 AddReminderInput(

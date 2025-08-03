@@ -18,6 +18,9 @@
     <string name="repeat_weekly">Weekly</string>
     <string name="repeat_monthly">Monthly</string>
     <string name="repeat_yearly">Yearly</string>
+    <string name="set_exact_alarm_permission_dialog_title">Warning</string>
+    <string name="set_exact_alarm_permission_dialog_description">Notifications may not work correctly because "Set Exact Alarm" permission is not granted.</string>
+    <string name="set_exact_alarm_permission_dialog_button">Grant Permission</string>
     <string name="april">April</string>
     <string name="august">August</string>
     <string name="december">December</string>
