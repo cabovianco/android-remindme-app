@@ -5,20 +5,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.cabovianco.remindme.presentation.ui.screen.AddReminderScreen
+import com.cabovianco.remindme.presentation.ui.screen.EditReminderScreen
 import com.cabovianco.remindme.presentation.ui.screen.MainScreen
 import com.cabovianco.remindme.presentation.ui.screen.PermissionScreen
 import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
+import com.cabovianco.remindme.presentation.viewmodel.EditReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.MainViewModel
 
 @Composable
@@ -74,8 +78,8 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
             MainScreen(
                 onAddReminderButtonClick = { navController.navigate(Screen.AddReminderScreen.route) },
-                onEditReminderClick = { navController.navigate(Screen.EditReminderScreen.route) },
-                onDeleteReminderClick = {mainViewModel.deleteReminder(it)},
+                onEditReminderClick = { navController.navigate(Screen.EditReminderScreen.createRoute(it)) },
+                onDeleteReminderClick = { mainViewModel.deleteReminder(it) },
                 onBackDaySelectorButtonClick = { mainViewModel.moveDateRangeBack() },
                 onForwardDaySelectorButtonClick = { mainViewModel.moveDateRangeForward() },
                 selectableDays = uiState.selectableDays,
@@ -86,7 +90,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
         composable(route = Screen.AddReminderScreen.route) {
             val addReminderViewModel: AddReminderViewModel = hiltViewModel()
-            val uiState by addReminderViewModel.uiState.collectAsState()
+            val uiState by addReminderViewModel.uiState.collectAsStateWithLifecycle()
 
             AddReminderScreen(
                 onCancelButtonClick = { navController.navigateUp() },
@@ -115,8 +119,42 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             )
         }
 
-        composable(route = Screen.EditReminderScreen.route) {
+        composable(
+            route = Screen.EditReminderScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val reminderId = backStackEntry.arguments?.getInt("id") ?: -1
 
+            val editReminderViewModel: EditReminderViewModel = hiltViewModel()
+            val uiState by editReminderViewModel.uiState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(Unit) { editReminderViewModel.loadReminder(reminderId) }
+
+            EditReminderScreen(
+                onCancelButtonClick = { navController.navigateUp() },
+                onConfirmButtonClick = {
+                    if (editReminderViewModel.isReminderValid()) {
+                        editReminderViewModel.saveReminder()
+                        navController.navigateUp()
+                    }
+                },
+                title = uiState.reminderTitle,
+                onTitleChange = { editReminderViewModel.onReminderTitleChange(it) },
+                description = uiState.reminderDescription,
+                onDescriptionChange = { editReminderViewModel.onReminderDescriptionChange(it) },
+                dateTime = uiState.reminderDateTime,
+                onTimeChange = { hour, minute ->
+                    editReminderViewModel.onReminderTimeChange(
+                        hour,
+                        minute
+                    )
+                },
+                onDateChange = { editReminderViewModel.onReminderDateChange(it) },
+                isReminderValid = uiState.isReminderValid,
+                repeat = uiState.reminderRepeat,
+                onRepeatChange = { editReminderViewModel.onReminderRepeatChange(it) },
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }

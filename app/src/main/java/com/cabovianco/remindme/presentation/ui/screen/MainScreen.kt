@@ -55,7 +55,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MainScreen(
     onAddReminderButtonClick: () -> Unit,
-    onEditReminderClick: () -> Unit,
+    onEditReminderClick: (Int) -> Unit,
     onDeleteReminderClick: (Reminder) -> Unit,
     onBackDaySelectorButtonClick: () -> Unit,
     onForwardDaySelectorButtonClick: () -> Unit,
@@ -251,7 +251,7 @@ private fun DaySelectorButton(iconResId: Int, onClick: () -> Unit, modifier: Mod
 @Composable
 private fun ListReminders(
     reminders: List<Reminder>,
-    onEditReminderClick: () -> Unit,
+    onEditReminderClick: (Int) -> Unit,
     onDeleteReminderClick: (Reminder) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -276,7 +276,7 @@ private fun ListReminders(
 @Composable
 private fun ReminderItem(
     reminder: Reminder,
-    onEditReminderClick: () -> Unit,
+    onEditReminderClick: (Int) -> Unit,
     onDeleteReminderClick: (Reminder) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -293,7 +293,7 @@ private fun ReminderItem(
         modifier = modifier
             .clip(CardDefaults.shape)
             .combinedClickable(
-                onClick = onEditReminderClick,
+                onClick = { onEditReminderClick(reminder.id) },
                 onLongClick = {
                     val vibrator = context.getSystemService(Vibrator::class.java)
                     vibrator?.vibrate(
