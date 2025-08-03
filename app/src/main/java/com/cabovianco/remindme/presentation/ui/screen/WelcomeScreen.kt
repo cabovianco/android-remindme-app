@@ -13,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.cabovianco.remindme.R
+import com.cabovianco.remindme.presentation.ui.theme.CherryRegular
 
 @Composable
 fun WelcomeScreen(
@@ -45,7 +47,8 @@ private fun WelcomeMessage(modifier: Modifier = Modifier) {
     ) {
         Text(
             text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.displayMedium
+            fontSize = 48.sp,
+            fontFamily = CherryRegular
         )
 
         Text(

@@ -153,8 +153,7 @@ private fun PermissionCardInfo(
 
         Text(
             text = stringResource(descriptionResId),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSecondary
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
