@@ -18,4 +18,20 @@
     <string name="repeat_weekly">Weekly</string>
     <string name="repeat_monthly">Monthly</string>
     <string name="repeat_yearly">Yearly</string>
+    <string name="april">April</string>
+    <string name="august">August</string>
+    <string name="december">December</string>
+    <string name="february">February</string>
+    <string name="january">January</string>
+    <string name="july">July</string>
+    <string name="june">June</string>
+    <string name="march">March</string>
+    <string name="may">May</string>
+    <string name="november">November</string>
+    <string name="october">October</string>
+    <string name="september">September</string>
+    <string name="error_message">An error has occurred</string>
+    <string name="delete_dialog_title">Delete reminder</string>
+    <string name="delete_dialog_description">Are you sure you want to delete this reminder? This action cannot be undone.</string>
+    <string name="delete_dialog_button">Delete</string>
 </resources>

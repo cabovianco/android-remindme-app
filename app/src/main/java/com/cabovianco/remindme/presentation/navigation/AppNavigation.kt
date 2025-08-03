@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +19,7 @@ import com.cabovianco.remindme.presentation.ui.screen.MainScreen
 import com.cabovianco.remindme.presentation.ui.screen.PermissionScreen
 import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
+import com.cabovianco.remindme.presentation.viewmodel.MainViewModel
 
 @Composable
 fun AppNavigation(
@@ -67,8 +69,17 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(route = Screen.MainScreen.route) {
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val uiState by mainViewModel.uiState.collectAsStateWithLifecycle()
+
             MainScreen(
-                onAddButtonClick = { navController.navigate(Screen.AddReminderScreen.route) },
+                onAddReminderButtonClick = { navController.navigate(Screen.AddReminderScreen.route) },
+                onEditReminderClick = { navController.navigate(Screen.EditReminderScreen.route) },
+                onDeleteReminderClick = {mainViewModel.deleteReminder(it)},
+                onBackDaySelectorButtonClick = { mainViewModel.moveDateRangeBack() },
+                onForwardDaySelectorButtonClick = { mainViewModel.moveDateRangeForward() },
+                selectableDays = uiState.selectableDays,
+                remindersUiState = uiState.remindersUiState,
                 modifier = Modifier.fillMaxSize()
             )
         }
