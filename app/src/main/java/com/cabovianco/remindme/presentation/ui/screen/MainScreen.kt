@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -130,7 +131,7 @@ private fun TopBar(onAddButtonClick: () -> Unit, modifier: Modifier = Modifier) 
         title = {},
         actions = {
             FilledIconButton(
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp),
                 onClick = { onAddButtonClick() },
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -174,7 +175,7 @@ private fun Date(year: Int, month: String, modifier: Modifier = Modifier) {
 
         Text(
             text = stringResource(getMonthResId(month)),
-            fontSize = 32.sp,
+            fontSize = 30.sp,
             fontFamily = CherryRegular
         )
     }
@@ -255,18 +256,30 @@ private fun ListReminders(
     onDeleteReminderClick: (Reminder) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(bottom = 8.dp)
-    ) {
-        reminders.forEach {
-            item {
-                ReminderItem(
-                    reminder = it,
-                    onEditReminderClick = onEditReminderClick,
-                    onDeleteReminderClick = onDeleteReminderClick,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
+    if (reminders.isEmpty()) {
+        Box(
+            modifier = modifier.fillMaxSize(0.80f),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.empty_reminders_label),
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
+    } else {
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = PaddingValues(bottom = 8.dp)
+        ) {
+            reminders.forEach {
+                item {
+                    ReminderItem(
+                        reminder = it,
+                        onEditReminderClick = onEditReminderClick,
+                        onDeleteReminderClick = onDeleteReminderClick,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
             }
         }
     }
@@ -311,20 +324,10 @@ private fun ReminderItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.80f)
-            ) {
-                Text(text = reminder.title, style = MaterialTheme.typography.titleMedium)
-
-                reminder.description?.let { description ->
-                    Text(
-                        text = reminder.description,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
+            Text(text = reminder.title, style = MaterialTheme.typography.titleMedium)
 
             Card {
                 Text(
@@ -335,6 +338,16 @@ private fun ReminderItem(
                     style = MaterialTheme.typography.titleSmall
                 )
             }
+        }
+
+        reminder.description?.let { description ->
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                text = reminder.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

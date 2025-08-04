@@ -37,4 +37,5 @@
     <string name="delete_dialog_title">Delete reminder</string>
     <string name="delete_dialog_description">Are you sure you want to delete this reminder? This action cannot be undone.</string>
     <string name="delete_dialog_button">Delete</string>
+    <string name="empty_reminders_label">Nothing to remind yet</string>
 </resources>
