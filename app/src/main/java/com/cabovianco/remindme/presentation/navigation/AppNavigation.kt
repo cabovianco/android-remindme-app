@@ -1,5 +1,8 @@
 package com.cabovianco.remindme.presentation.navigation
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -12,7 +15,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -29,6 +37,7 @@ import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.EditReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.MainViewModel
+import androidx.core.content.edit
 
 @Composable
 fun AppNavigation(
@@ -49,16 +58,35 @@ fun AppNavigation(
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val showWelcomeScreen = prefs.getBoolean("showWelcomeScreen", false)
+
     val navToPermissionScreen = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    var isPermissionAccepted by remember { mutableStateOf(true) }
+
+    if (navToPermissionScreen) {
+        isPermissionAccepted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    val startDestination = when {
+        !showWelcomeScreen -> Screen.WelcomeScreen.route
+        navToPermissionScreen && !isPermissionAccepted -> Screen.PermissionScreen.route
+        else -> Screen.MainScreen.route
+    }
 
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.WelcomeScreen.route
+        startDestination = startDestination
     ) {
         composable(route = Screen.WelcomeScreen.route) {
             WelcomeScreen(
                 onGetStartedClick = {
+                    prefs.edit(commit = true) { putBoolean("showWelcomeScreen", true) }
                     navController.navigate(
                         if (navToPermissionScreen) Screen.PermissionScreen.route
                         else Screen.MainScreen.route
