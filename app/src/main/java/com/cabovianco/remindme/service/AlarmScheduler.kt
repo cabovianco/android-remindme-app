@@ -11,8 +11,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val alarmSchedulerTag = "AlarmScheduler"
-
 @Singleton
 class AlarmScheduler @Inject constructor(
     @ApplicationContext private val context: Context

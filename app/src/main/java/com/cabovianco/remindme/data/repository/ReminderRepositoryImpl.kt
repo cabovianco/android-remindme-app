@@ -1,6 +1,5 @@
 package com.cabovianco.remindme.data.repository
 
-import android.util.Log
 import com.cabovianco.remindme.data.local.dao.ReminderDao
 import com.cabovianco.remindme.data.local.entity.toDomain
 import com.cabovianco.remindme.domain.model.Reminder
@@ -12,8 +11,6 @@ import kotlinx.coroutines.flow.map
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
-private const val reminderRepositoryTag = "ReminderRepositoryImpl"
-
 class ReminderRepositoryImpl @Inject constructor(
     private val reminderDao: ReminderDao
 ) : ReminderRepository {
@@ -22,7 +19,6 @@ class ReminderRepositoryImpl @Inject constructor(
             val id = reminderDao.insert(reminder.toEntity())
             Result.success(id)
         } catch (e: Exception) {
-            Log.d(reminderRepositoryTag, "Error: ${e.message}")
             Result.failure(e)
         }
     }
@@ -32,7 +28,6 @@ class ReminderRepositoryImpl @Inject constructor(
             reminderDao.update(reminder.toEntity())
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.d(reminderRepositoryTag, "Error: ${e.message}")
             Result.failure(e)
         }
     }
@@ -41,7 +36,6 @@ class ReminderRepositoryImpl @Inject constructor(
         return reminderDao.getById(id)
             .map { it?.toDomain() }
             .catch { e ->
-                Log.d(reminderRepositoryTag, "Error: ${e.message}")
                 throw e
             }
     }
@@ -53,7 +47,6 @@ class ReminderRepositoryImpl @Inject constructor(
         return reminderDao.getAllWithinDateRange(from, to)
             .map { it.map { entity -> entity.toDomain() } }
             .catch { e ->
-                Log.d(reminderRepositoryTag, "Error: ${e.message}")
                 throw e
             }
     }
@@ -62,7 +55,6 @@ class ReminderRepositoryImpl @Inject constructor(
         return reminderDao.getAllSinceDate(from)
             .map { it.map { entity -> entity.toDomain() } }
             .catch { e ->
-                Log.d(reminderRepositoryTag, "Error: ${e.message}")
                 throw e
             }
     }
@@ -72,7 +64,6 @@ class ReminderRepositoryImpl @Inject constructor(
             reminderDao.delete(reminder.toEntity())
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.d(reminderRepositoryTag, "Error: ${e.message}")
             Result.failure(e)
         }
     }
