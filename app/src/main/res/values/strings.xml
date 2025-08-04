@@ -8,7 +8,7 @@
     <string name="permissions_screen_accept_button">Continue</string>
     <string name="title_label">Title</string>
     <string name="description_label">Description</string>
-    <string name="add_text_button">Add</string>
+    <string name="select_text_button">Select</string>
     <string name="time_label">Time</string>
     <string name="calendar_label">Calendar</string>
     <string name="date_format">MM/dd/yyyy</string>
@@ -33,6 +33,13 @@
     <string name="november">November</string>
     <string name="october">October</string>
     <string name="september">September</string>
+    <string name="monday">M</string>
+    <string name="tuesday">T</string>
+    <string name="wednesday">W</string>
+    <string name="thursday">T</string>
+    <string name="friday">F</string>
+    <string name="saturday">S</string>
+    <string name="sunday">S</string>
     <string name="error_message">An error has occurred</string>
     <string name="delete_dialog_title">Delete reminder</string>
     <string name="delete_dialog_description">Are you sure you want to delete this reminder? This action cannot be undone.</string>

@@ -49,6 +49,7 @@ import com.cabovianco.remindme.R
 import com.cabovianco.remindme.domain.model.Reminder
 import com.cabovianco.remindme.presentation.state.RemindersUiState
 import com.cabovianco.remindme.presentation.ui.theme.CherryRegular
+import java.time.DayOfWeek
 import java.time.Month
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -181,6 +182,17 @@ private fun Date(year: Int, month: String, modifier: Modifier = Modifier) {
     }
 }
 
+private fun getDayResId(day: String): Int = when (day) {
+    DayOfWeek.MONDAY.name -> R.string.monday
+    DayOfWeek.TUESDAY.name -> R.string.tuesday
+    DayOfWeek.WEDNESDAY.name -> R.string.wednesday
+    DayOfWeek.THURSDAY.name -> R.string.thursday
+    DayOfWeek.FRIDAY.name -> R.string.friday
+    DayOfWeek.SATURDAY.name -> R.string.saturday
+    DayOfWeek.SUNDAY.name -> R.string.sunday
+    else -> 0
+}
+
 @Composable
 private fun DaySelector(
     onBackButtonClick: () -> Unit,
@@ -217,7 +229,7 @@ private fun DaySelector(
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${it.dayOfWeek.name[0]}",
+                            text = stringResource(getDayResId(it.dayOfWeek.name)),
                             style = MaterialTheme.typography.titleSmall
                         )
 
@@ -335,7 +347,7 @@ private fun ReminderItem(
                     text = reminder.dateTime.format(
                         DateTimeFormatter.ofPattern("HH:mm")
                     ),
-                    style = MaterialTheme.typography.titleSmall
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
         }

@@ -312,7 +312,7 @@ private fun AddReminderInput(onClick: () -> Unit, modifier: Modifier = Modifier)
     ) {
         TextButton(
             onClick = { onClick() }
-        ) { Text(text = stringResource(R.string.add_text_button)) }
+        ) { Text(text = stringResource(R.string.select_text_button)) }
     }
 }
 
