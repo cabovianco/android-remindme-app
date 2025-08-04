@@ -339,7 +339,11 @@ private fun ReminderItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = reminder.title, style = MaterialTheme.typography.titleMedium)
+            Text(
+                modifier = Modifier.fillMaxWidth(0.80f),
+                text = reminder.title,
+                style = MaterialTheme.typography.titleMedium
+            )
 
             Card {
                 Text(
