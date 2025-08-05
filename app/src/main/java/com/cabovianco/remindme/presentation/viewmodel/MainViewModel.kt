@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.cabovianco.remindme.domain.model.Reminder
 import com.cabovianco.remindme.domain.model.Repeat
 import com.cabovianco.remindme.domain.usecase.DeleteReminderUseCase
-import com.cabovianco.remindme.domain.usecase.GetAllRemindersWithinDateRangeUseCase
+import com.cabovianco.remindme.domain.usecase.GetAllRemindersUseCase
 import com.cabovianco.remindme.presentation.state.MainUiState
 import com.cabovianco.remindme.presentation.state.RemindersUiState
 import com.cabovianco.remindme.service.AlarmScheduler
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getAllRemindersWithinDateRangeUseCase: GetAllRemindersWithinDateRangeUseCase,
+    private val getAllRemindersUseCase: GetAllRemindersUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
     private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
@@ -33,8 +33,14 @@ class MainViewModel @Inject constructor(
         .withSecond(0)
         .withNano(0)
 
+    private val to = from.plusDays(4)
+        .withHour(23)
+        .withMinute(59)
+        .withSecond(59)
+        .withNano(999_999_999)
+
     private val dateRange = MutableStateFlow(
-        from to from.plusDays(4)
+        from to to
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -43,8 +49,7 @@ class MainViewModel @Inject constructor(
             getSelectableDays()
         }
         .flatMapLatest { selectableDays ->
-            val (from, to) = dateRange.value
-            getAllRemindersWithinDateRangeUseCase(from, to)
+            getAllRemindersUseCase()
                 .map { reminders ->
                     MainUiState(
                         selectableDays = selectableDays,
@@ -61,14 +66,19 @@ class MainViewModel @Inject constructor(
 
     private fun getReminders(reminders: List<Reminder>): List<Reminder> {
         val result = mutableListOf<Reminder>()
+        val (rangeFrom, rangeTo) = dateRange.value
+
         reminders.forEach { reminder ->
-            result.add(reminder)
-            if (reminder.repeat != Repeat.Never) {
-                var nextDate = reminder.repeat.nextDate(reminder.dateTime)
-                while (nextDate <= dateRange.value.second) {
-                    result.add(reminder.copy(dateTime = nextDate))
-                    nextDate = reminder.repeat.nextDate(nextDate)
-                }
+            var occurrenceDate = reminder.dateTime
+
+            while (occurrenceDate.isBefore(rangeFrom) && reminder.repeat != Repeat.Never) {
+                occurrenceDate = reminder.repeat.nextDate(occurrenceDate)
+            }
+
+            while (!occurrenceDate.isAfter(rangeTo) && !occurrenceDate.isBefore(rangeFrom)) {
+                result.add(reminder.copy(dateTime = occurrenceDate))
+                occurrenceDate = reminder.repeat.nextDate(occurrenceDate)
+                if (reminder.repeat == Repeat.Never) break
             }
         }
 

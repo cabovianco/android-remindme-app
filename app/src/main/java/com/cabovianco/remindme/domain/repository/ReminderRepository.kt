@@ -11,12 +11,9 @@ interface ReminderRepository {
 
     fun getReminderById(id: Int): Flow<Reminder?>
 
-    fun getAllRemindersWithinDateRange(
-        from: ZonedDateTime,
-        to: ZonedDateTime
-    ): Flow<List<Reminder>>
-
     fun getAllRemindersSinceDate(from: ZonedDateTime): Flow<List<Reminder>>
+
+    fun getAllReminders(): Flow<List<Reminder>>
 
     suspend fun deleteReminder(reminder: Reminder): Result<Unit>
 }

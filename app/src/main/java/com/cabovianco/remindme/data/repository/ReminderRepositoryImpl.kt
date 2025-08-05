@@ -40,19 +40,16 @@ class ReminderRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getAllRemindersWithinDateRange(
-        from: ZonedDateTime,
-        to: ZonedDateTime
-    ): Flow<List<Reminder>> {
-        return reminderDao.getAllWithinDateRange(from, to)
+    override fun getAllRemindersSinceDate(from: ZonedDateTime): Flow<List<Reminder>> {
+        return reminderDao.getAllSinceDate(from)
             .map { it.map { entity -> entity.toDomain() } }
             .catch { e ->
                 throw e
             }
     }
 
-    override fun getAllRemindersSinceDate(from: ZonedDateTime): Flow<List<Reminder>> {
-        return reminderDao.getAllSinceDate(from)
+    override fun getAllReminders(): Flow<List<Reminder>> {
+        return reminderDao.getAll()
             .map { it.map { entity -> entity.toDomain() } }
             .catch { e ->
                 throw e

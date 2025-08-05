@@ -21,14 +21,11 @@ interface ReminderDao {
     @Query("SELECT * FROM reminders WHERE id = :id")
     fun getById(id: Int): Flow<ReminderEntity?>
 
-    @Query("SELECT * FROM reminders WHERE dateTime >= :from AND dateTime <= :to")
-    fun getAllWithinDateRange(
-        from: ZonedDateTime,
-        to: ZonedDateTime
-    ): Flow<List<ReminderEntity>>
-
     @Query("SELECT * FROM reminders WHERE dateTime > :from")
     fun getAllSinceDate(from: ZonedDateTime): Flow<List<ReminderEntity>>
+
+    @Query("SELECT * FROM reminders")
+    fun getAll(): Flow<List<ReminderEntity>>
 
     @Delete
     suspend fun delete(reminder: ReminderEntity)
