@@ -47,6 +47,7 @@ Download and install RemindMe directly from the [Play Store](https://play.google
 - **UI:** Jetpack Compose, Splash Screen.
 - **Data & Concurrency:** Room, Kotlin Coroutines, Kotlin StateFlow, AlarmManager.
 - **Dependency Injection:** Dagger Hilt.
+- **Navigation:** Navigation Compose.
 
 ## Contributing
 
@@ -54,12 +55,24 @@ Contributions are welcome!
 If you want to help improve RemindMe, please:
 
 1. Fork the repository.
-2. Create a feature branch (git checkout -b feature/new-feature).
-3. Commit your changes (git commit -m 'Add new feature').
-4. Push to the branch (git push origin feature/new-feature).
+2. Create a new branch:
+
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+3. Commit your changes:
+
+   ```bash
+   git commit -m 'Add new feature'
+   ```
+4. Push your branch:
+
+   ```bash
+   git push origin feature/new-feature
+   ```
 5. Open a Pull Request.
 
-Please ensure your code adheres to the existing style and includes appropriate tests.
+Please ensure your code follows the existing style and includes tests when appropriate.
 
 ## License
 
