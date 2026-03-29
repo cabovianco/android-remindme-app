@@ -49,31 +49,6 @@ Download and install RemindMe directly from the [Play Store](https://play.google
 - **Dependency Injection:** Dagger Hilt.
 - **Navigation:** Navigation Compose.
 
-## Contributing
-
-Contributions are welcome!
-If you want to help improve RemindMe, please:
-
-1. Fork the repository.
-2. Create a new branch:
-
-   ```bash
-   git checkout -b feature/new-feature
-   ```
-3. Commit your changes:
-
-   ```bash
-   git commit -m 'Add new feature'
-   ```
-4. Push your branch:
-
-   ```bash
-   git push origin feature/new-feature
-   ```
-5. Open a Pull Request.
-
-Please ensure your code follows the existing style and includes tests when appropriate.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
