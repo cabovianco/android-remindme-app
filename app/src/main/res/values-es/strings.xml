@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_app_name">RemindMe</string>
+
+    <string name="welcome_app_description">Tus recordatorios, privados y sin conexión.</string>
+    <string name="welcome_btn_start">Empezar</string>
+
+    <string name="permissions_notif_title">Mantente Notificado</string>
+    <string name="permissions_notif_desc">Activa las notificaciones para no perderte ninguna tarea.</string>
+    <string name="permissions_alarm_title">Recordatorios Exactos</string>
+    <string name="permissions_alarm_desc">Activa las alarmas exactas para asegurar que tus recordatorios suenen en el momento preciso, incluso si el dispositivo está en reposo.</string>
+    <string name="permissions_btn_continue">Continuar</string>
+
+    <string name="main_date_today_indicator">HOY</string>
+    <string name="main_empty_state_label">Sin recordatorios.</string>
+
+    <string name="editor_title_add">Crear</string>
+    <string name="editor_title_edit">Editar</string>
+    <string name="editor_title_hint">Título</string>
+    <string name="editor_desc_hint">Descripción</string>
+    <string name="editor_date_label">Fecha</string>
+    <string name="editor_time_label">Hora</string>
+    <string name="editor_repeat_label">Repetir</string>
+    <string name="repeat_option_never">Nunca</string>
+    <string name="repeat_option_daily">Diario</string>
+    <string name="repeat_option_weekly">Semanal</string>
+    <string name="repeat_option_monthly">Mensual</string>
+    <string name="repeat_option_yearly">Anual</string>
+
+    <string name="common_date_format">dd/MM/yyyy</string>
+    <string name="common_error_generic">Algo salió mal. Por favor, inténtalo de nuevo.</string>
+    <string name="common_btn_save">Guardar</string>
+</resources>
