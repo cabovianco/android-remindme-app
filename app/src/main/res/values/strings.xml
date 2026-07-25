@@ -1,0 +1,32 @@
+<resources>
+    <string name="common_app_name">RemindMe</string>
+
+    <string name="welcome_app_description">Your reminders, private and offline.</string>
+    <string name="welcome_btn_start">Get Started</string>
+
+    <string name="permissions_notif_title">Stay Notified</string>
+    <string name="permissions_notif_desc">Enable notifications to never miss an important task.</string>
+    <string name="permissions_alarm_title">Exact Reminders</string>
+    <string name="permissions_alarm_desc">Enable exact alarms to ensure your reminders trigger at the precise time, even when the device is idle.</string>
+    <string name="permissions_btn_continue">Continue</string>
+
+    <string name="main_date_today_indicator">TODAY</string>
+    <string name="main_empty_state_label">No reminders yet.</string>
+
+    <string name="editor_title_add">Create</string>
+    <string name="editor_title_edit">Edit</string>
+    <string name="editor_title_hint">Title</string>
+    <string name="editor_desc_hint">Description</string>
+    <string name="editor_date_label">Date</string>
+    <string name="editor_time_label">Time</string>
+    <string name="editor_repeat_label">Repeat</string>
+    <string name="repeat_option_never">Never</string>
+    <string name="repeat_option_daily">Daily</string>
+    <string name="repeat_option_weekly">Weekly</string>
+    <string name="repeat_option_monthly">Monthly</string>
+    <string name="repeat_option_yearly">Yearly</string>
+
+    <string name="common_date_format">MM/dd/yyyy</string>
+    <string name="common_error_generic">Something went wrong. Please try again.</string>
+    <string name="common_btn_save">Save</string>
+</resources>
