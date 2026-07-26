@@ -18,8 +18,8 @@ android {
         applicationId = "com.cabovianco.remindme"
         minSdk = 26
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.0.0"
+        versionCode = 15
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,6 +27,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

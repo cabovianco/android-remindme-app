@@ -5,15 +5,15 @@ import kotlinx.coroutines.flow.Flow
 import java.time.ZonedDateTime
 
 interface ReminderRepository {
-    suspend fun insertReminder(reminder: Reminder): Result<Long>
+    fun getAll(): Flow<List<Reminder>>
 
-    suspend fun updateReminder(reminder: Reminder): Result<Unit>
+    fun getAllSinceDate(from: ZonedDateTime): Flow<List<Reminder>>
 
-    fun getReminderById(id: Int): Flow<Reminder?>
+    fun getById(id: Long): Flow<Reminder?>
 
-    fun getAllRemindersSinceDate(from: ZonedDateTime): Flow<List<Reminder>>
+    suspend fun insert(reminder: Reminder): Result<Long>
 
-    fun getAllReminders(): Flow<List<Reminder>>
+    suspend fun update(reminder: Reminder): Result<Unit>
 
-    suspend fun deleteReminder(reminder: Reminder): Result<Unit>
+    suspend fun delete(reminder: Reminder): Result<Unit>
 }

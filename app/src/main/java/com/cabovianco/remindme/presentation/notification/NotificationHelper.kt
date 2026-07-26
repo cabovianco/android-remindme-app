@@ -32,16 +32,16 @@ class NotificationHelper @Inject constructor(
         notificationManager.createNotificationChannel(channel)
     }
 
-    fun showNotification(id: Int, title: String, message: String?) {
+    fun showNotification(id: Long, title: String, message: String?) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
-            .setSmallIcon(R.drawable.notification)
+            .setSmallIcon(R.drawable.ic_notification)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         if (message != null) {
             notification.setContentText(message)
         }
 
-        notificationManager.notify(id, notification.build())
+        notificationManager.notify(id.toInt(), notification.build())
     }
 }

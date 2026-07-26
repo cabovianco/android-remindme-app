@@ -24,11 +24,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.cabovianco.remindme.presentation.ui.screen.AddReminderScreen
+import com.cabovianco.remindme.presentation.ui.screen.CreateTagScreen
 import com.cabovianco.remindme.presentation.ui.screen.EditReminderScreen
 import com.cabovianco.remindme.presentation.ui.screen.MainScreen
 import com.cabovianco.remindme.presentation.ui.screen.PermissionScreen
 import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
+import com.cabovianco.remindme.presentation.viewmodel.CreateTagViewModel
 import com.cabovianco.remindme.presentation.viewmodel.EditReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.MainViewModel
 
@@ -109,6 +111,7 @@ fun AppNavigation(
             MainScreen(
                 onAddReminder = { navController.navigate(Screen.AddReminderScreen) },
                 onEditReminder = { navController.navigate(Screen.EditReminderScreen(it)) },
+                onCreateTag = { navController.navigate(Screen.CreateTagScreen) },
                 viewModel = viewModel
             )
         }
@@ -127,7 +130,7 @@ fun AppNavigation(
 
             AddReminderScreen(
                 onBackClick = { navController.navigateUp() },
-                onReminderAdded = { navController.navigateUp() },
+                onCreateTag = { navController.navigate(Screen.CreateTagScreen) },
                 viewModel = viewModel
             )
         }
@@ -148,7 +151,25 @@ fun AppNavigation(
             EditReminderScreen(
                 reminderId = route.id,
                 onBackClick = { navController.navigateUp() },
-                onReminderSaved = { navController.navigateUp() },
+                onCreateTag = { navController.navigate(Screen.CreateTagScreen) },
+                viewModel = viewModel
+            )
+        }
+
+        composable<Screen.CreateTagScreen>(
+            enterTransition = {
+                if (initialState.destination.hasRoute<Screen.MainScreen>()) slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                ) else EnterTransition.None
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            }
+        ) {
+            val viewModel: CreateTagViewModel = hiltViewModel()
+
+            CreateTagScreen(
+                onBackClick = { navController.navigateUp() },
                 viewModel = viewModel
             )
         }

@@ -11,15 +11,12 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,7 +40,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cabovianco.remindme.R
-import com.cabovianco.remindme.presentation.ui.screen.shared.PrimaryButton
+import com.cabovianco.remindme.presentation.ui.screen.shared.BottomActionButton
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -180,13 +177,10 @@ private fun PermissionStepLayout(
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            PrimaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(24.dp),
+            BottomActionButton(
                 text = stringResource(R.string.permissions_btn_continue),
-                onClick = onButtonClick
+                onClick = onButtonClick,
+                paddingValues = PaddingValues(24.dp)
             )
         }
     ) {
@@ -223,17 +217,6 @@ private fun PermissionStepLayout(
     }
 }
 
-private enum class PermissionStepType {
-    Notifications,
-    ExactAlarm
-}
-
-private data class PermissionStep(
-    val title: String,
-    val description: String,
-    val icon: Painter
-)
-
 @Composable
 private fun getPermissionStep(type: PermissionStepType): PermissionStep {
     return when (type) {
@@ -250,6 +233,17 @@ private fun getPermissionStep(type: PermissionStepType): PermissionStep {
         )
     }
 }
+
+private enum class PermissionStepType {
+    Notifications,
+    ExactAlarm
+}
+
+private data class PermissionStep(
+    val title: String,
+    val description: String,
+    val icon: Painter
+)
 
 private fun hasNotificationPermission(context: Context): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

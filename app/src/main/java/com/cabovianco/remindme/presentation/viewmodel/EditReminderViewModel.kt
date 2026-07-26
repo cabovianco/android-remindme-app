@@ -2,6 +2,7 @@ package com.cabovianco.remindme.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.cabovianco.remindme.data.alarm.AlarmScheduler
+import com.cabovianco.remindme.domain.usecase.GetAllTagsUseCase
 import com.cabovianco.remindme.domain.usecase.GetReminderByIdUseCase
 import com.cabovianco.remindme.domain.usecase.UpdateReminderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,9 +15,10 @@ import javax.inject.Inject
 class EditReminderViewModel @Inject constructor(
     private val getReminderByIdUseCase: GetReminderByIdUseCase,
     private val updateReminderUseCase: UpdateReminderUseCase,
+    private val getAllTagsUseCase: GetAllTagsUseCase,
     private val alarmScheduler: AlarmScheduler
-) : ReminderFormViewModel() {
-    fun loadReminder(id: Int) {
+) : ReminderFormViewModel(getAllTagsUseCase) {
+    fun loadReminder(id: Long) {
         viewModelScope.launch {
             getReminderByIdUseCase(id)
                 .filterNotNull()
@@ -24,11 +26,12 @@ class EditReminderViewModel @Inject constructor(
                     mutableUiState.update {
                         with(reminder) {
                             it.copy(
-                                reminderId = id,
-                                reminderTitle = title,
-                                reminderDescription = description,
-                                reminderDateTime = dateTime,
-                                reminderRepeat = repeat
+                                id = id,
+                                title = title,
+                                description = description,
+                                dateTime = dateTime,
+                                repeat = repeat,
+                                selectedTags = tags.toSet()
                             )
                         }
                     }

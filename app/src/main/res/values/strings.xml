@@ -10,23 +10,36 @@
     <string name="permissions_alarm_desc">Enable exact alarms to ensure your reminders trigger at the precise time, even when the device is idle.</string>
     <string name="permissions_btn_continue">Continue</string>
 
-    <string name="main_date_today_indicator">TODAY</string>
     <string name="main_empty_state_label">No reminders yet.</string>
 
-    <string name="editor_title_add">Create</string>
-    <string name="editor_title_edit">Edit</string>
+    <string name="editor_title_add">Create Reminder</string>
+    <string name="editor_title_edit">Edit Reminder</string>
     <string name="editor_title_hint">Title</string>
     <string name="editor_desc_hint">Description</string>
     <string name="editor_date_label">Date</string>
     <string name="editor_time_label">Time</string>
     <string name="editor_repeat_label">Repeat</string>
-    <string name="repeat_option_never">Never</string>
-    <string name="repeat_option_daily">Daily</string>
-    <string name="repeat_option_weekly">Weekly</string>
-    <string name="repeat_option_monthly">Monthly</string>
-    <string name="repeat_option_yearly">Yearly</string>
+    <string name="repeat_every_label">Every</string>
+    <string name="repeat_option_day">Day</string>
+    <string name="repeat_option_week">Week</string>
+    <string name="repeat_option_month">Month</string>
+    <string name="repeat_option_year">Year</string>
+    <string name="editor_tag_label">Tags</string>
+
+    <string name="tag_all">All</string>
 
     <string name="common_date_format">MM/dd/yyyy</string>
     <string name="common_error_generic">Something went wrong. Please try again.</string>
     <string name="common_btn_save">Save</string>
+
+    <string name="create_tag_title">Create Tag</string>
+    <string name="create_tag_name_hint">Name</string>
+    <string name="create_tag_icon_label">Icon</string>
+    <string name="create_tag_color_label">Color</string>
+
+    <string name="common_btn_delete">Delete</string>
+    <string name="main_delete_tag_title">Delete Tag</string>
+    <string name="main_delete_tag_message">Are you sure you want to delete \"%1$s\"?</string>
+    <string name="main_delete_reminder_title">Delete Reminder</string>
+    <string name="main_delete_reminder_message">Are you sure you want to delete \"%1$s\"? All future occurrences will be removed.</string>
 </resources>

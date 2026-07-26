@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cabovianco.remindme.data.alarm.AlarmScheduler
 import com.cabovianco.remindme.domain.model.Reminder
-import com.cabovianco.remindme.domain.model.Repeat
+import com.cabovianco.remindme.domain.model.ReminderRepeat
+import com.cabovianco.remindme.domain.model.Tag
 import com.cabovianco.remindme.domain.usecase.DeleteReminderUseCase
+import com.cabovianco.remindme.domain.usecase.DeleteTagUseCase
 import com.cabovianco.remindme.domain.usecase.GetAllRemindersUseCase
+import com.cabovianco.remindme.domain.usecase.GetAllTagsUseCase
 import com.cabovianco.remindme.presentation.state.MainState
 import com.cabovianco.remindme.presentation.state.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getAllRemindersUseCase: GetAllRemindersUseCase,
+    private val getAllTagsUseCase: GetAllTagsUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
+    private val deleteTagUseCase: DeleteTagUseCase,
     private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
     private val today = ZonedDateTime.now()
@@ -46,19 +51,34 @@ class MainViewModel @Inject constructor(
 
     private val _selectedDate = MutableStateFlow(today)
 
+    private val _selectedTags = MutableStateFlow(emptySet<Tag>())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState =
-        combine(_dateRange, _selectedDate) { range, selected ->
-            range to selected
-        }.flatMapLatest { (range, selected) ->
+        combine(
+            _dateRange,
+            _selectedDate,
+            _selectedTags,
+            getAllTagsUseCase()
+        ) { range, selectedDate, selectedTags, tags ->
+            Data(range, selectedDate, selectedTags, tags)
+        }.flatMapLatest { data ->
             getAllRemindersUseCase()
-                .map {
+                .map { reminders ->
+                    val dayReminders = dayOccurrences(reminders, data.selectedDate)
+                    val filteredReminders = dayReminders.filter { reminder ->
+                        data.selectedTags.isEmpty() ||
+                                data.selectedTags.all { selectedTag ->
+                                    reminder.tags.any { it.id == selectedTag.id }
+                                }
+                    }
+
                     MainUiState(
-                        selectedDate = selected,
-                        selectableDates = datesInRange(from = range.first, to = range.second),
-                        mainState = MainState.Success(
-                            dayOccurrences(it, selected)
-                        )
+                        selectedDate = data.selectedDate,
+                        selectableDates = datesInRange(from = data.range.first, to = data.range.second),
+                        tags = data.tags,
+                        selectedTags = data.selectedTags,
+                        mainState = MainState.Success(filteredReminders)
                     )
                 }
                 .catch { emit(MainUiState(mainState = MainState.Error)) }
@@ -67,6 +87,13 @@ class MainViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = MainUiState()
         )
+
+    private data class Data(
+        val range: Pair<ZonedDateTime, ZonedDateTime>,
+        val selectedDate: ZonedDateTime,
+        val selectedTags: Set<Tag>,
+        val tags: List<Tag>
+    )
 
     private fun datesInRange(from: ZonedDateTime, to: ZonedDateTime): List<ZonedDateTime> {
         return generateSequence(from) { it.plusDays(1) }
@@ -86,8 +113,8 @@ class MainViewModel @Inject constructor(
         reminders.forEach {
             var occurrenceDate = it.dateTime
 
-            while (occurrenceDate.isBefore(startOfDay) && it.repeat != Repeat.Never) {
-                occurrenceDate = it.repeat.nextDate(occurrenceDate)
+            while (occurrenceDate.isBefore(startOfDay) && it.repeat != ReminderRepeat.Never) {
+                occurrenceDate = it.repeat.next(occurrenceDate)
             }
 
             if (!occurrenceDate.isBefore(startOfDay) && !occurrenceDate.isAfter(endOfDay)) {
@@ -116,6 +143,22 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             alarmScheduler.cancel(reminder.id)
             deleteReminderUseCase(reminder)
+        }
+    }
+
+    fun toggleTag(tag: Tag) {
+        if (tag.id == -1L) {
+            _selectedTags.value = emptySet()
+            return
+        }
+
+        val current = _selectedTags.value
+        _selectedTags.value = if (tag in current) current - tag else current + tag
+    }
+
+    fun deleteTag(tag: Tag) {
+        viewModelScope.launch {
+            deleteTagUseCase(tag)
         }
     }
 }

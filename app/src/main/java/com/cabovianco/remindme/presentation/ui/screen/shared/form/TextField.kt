@@ -1,4 +1,4 @@
-package com.cabovianco.remindme.presentation.ui.screen.shared
+package com.cabovianco.remindme.presentation.ui.screen.shared.form
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme

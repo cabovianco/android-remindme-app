@@ -9,7 +9,7 @@ import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
 @Composable
 fun AddReminderScreen(
     onBackClick: () -> Unit,
-    onReminderAdded: () -> Unit,
+    onCreateTag: () -> Unit,
     viewModel: AddReminderViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -18,11 +18,10 @@ fun AddReminderScreen(
         viewModel = viewModel,
         onBackClick = onBackClick,
         onSaveClick = {
-            if (viewModel.isReminderValid()) {
-                viewModel.addReminder()
-                onReminderAdded()
-            }
+            viewModel.addReminder()
+            onBackClick()
         },
+        onCreateTag = onCreateTag,
         modifier = modifier
     )
 }

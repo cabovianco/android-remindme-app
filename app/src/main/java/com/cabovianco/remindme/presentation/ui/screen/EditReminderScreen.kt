@@ -9,9 +9,9 @@ import com.cabovianco.remindme.presentation.viewmodel.EditReminderViewModel
 
 @Composable
 fun EditReminderScreen(
-    reminderId: Int,
+    reminderId: Long,
     onBackClick: () -> Unit,
-    onReminderSaved: () -> Unit,
+    onCreateTag: () -> Unit,
     viewModel: EditReminderViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -24,11 +24,10 @@ fun EditReminderScreen(
         viewModel = viewModel,
         onBackClick = onBackClick,
         onSaveClick = {
-            if (viewModel.isReminderValid()) {
-                viewModel.saveReminder()
-                onReminderSaved()
-            }
+            viewModel.saveReminder()
+            onBackClick()
         },
+        onCreateTag = onCreateTag,
         modifier = modifier
     )
 }

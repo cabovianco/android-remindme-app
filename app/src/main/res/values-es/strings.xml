@@ -11,23 +11,36 @@
     <string name="permissions_alarm_desc">Activa las alarmas exactas para asegurar que tus recordatorios suenen en el momento preciso, incluso si el dispositivo está en reposo.</string>
     <string name="permissions_btn_continue">Continuar</string>
 
-    <string name="main_date_today_indicator">HOY</string>
     <string name="main_empty_state_label">Sin recordatorios.</string>
 
-    <string name="editor_title_add">Crear</string>
-    <string name="editor_title_edit">Editar</string>
+    <string name="editor_title_add">Crear Recordatorio</string>
+    <string name="editor_title_edit">Editar Recordatorio</string>
     <string name="editor_title_hint">Título</string>
     <string name="editor_desc_hint">Descripción</string>
     <string name="editor_date_label">Fecha</string>
     <string name="editor_time_label">Hora</string>
     <string name="editor_repeat_label">Repetir</string>
-    <string name="repeat_option_never">Nunca</string>
-    <string name="repeat_option_daily">Diario</string>
-    <string name="repeat_option_weekly">Semanal</string>
-    <string name="repeat_option_monthly">Mensual</string>
-    <string name="repeat_option_yearly">Anual</string>
+    <string name="repeat_every_label">Cada</string>
+    <string name="repeat_option_day">Día</string>
+    <string name="repeat_option_week">Semana</string>
+    <string name="repeat_option_month">Mes</string>
+    <string name="repeat_option_year">Año</string>
+    <string name="editor_tag_label">Etiquetas</string>
+
+    <string name="tag_all">Todos</string>
 
     <string name="common_date_format">dd/MM/yyyy</string>
     <string name="common_error_generic">Algo salió mal. Por favor, inténtalo de nuevo.</string>
     <string name="common_btn_save">Guardar</string>
+
+    <string name="create_tag_title">Crear Etiqueta</string>
+    <string name="create_tag_name_hint">Nombre</string>
+    <string name="create_tag_icon_label">Icono</string>
+    <string name="create_tag_color_label">Color</string>
+
+    <string name="common_btn_delete">Eliminar</string>
+    <string name="main_delete_tag_title">Eliminar Etiqueta</string>
+    <string name="main_delete_tag_message">¿Estás seguro de que quieres eliminar \"%1$s\"?</string>
+    <string name="main_delete_reminder_title">Eliminar Recordatorio</string>
+    <string name="main_delete_reminder_message">¿Estás seguro de que quieres eliminar \"%1$s\"? Se eliminarán todas las repeticiones futuras.</string>
 </resources>

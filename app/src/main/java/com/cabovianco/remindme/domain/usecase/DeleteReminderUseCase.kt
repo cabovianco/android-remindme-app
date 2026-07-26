@@ -7,6 +7,6 @@ import javax.inject.Inject
 class DeleteReminderUseCase @Inject constructor(
     private val reminderRepository: ReminderRepository
 ) {
-    suspend operator fun invoke(reminder: Reminder) =
-        reminderRepository.deleteReminder(reminder)
+    suspend operator fun invoke(reminder: Reminder): Result<Unit> =
+        reminderRepository.delete(reminder)
 }
