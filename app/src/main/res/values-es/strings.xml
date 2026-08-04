@@ -11,7 +11,11 @@
     <string name="permissions_alarm_desc">Activa las alarmas exactas para asegurar que tus recordatorios suenen en el momento preciso, incluso si el dispositivo está en reposo.</string>
     <string name="permissions_btn_continue">Continuar</string>
 
-    <string name="main_empty_state_label">Sin recordatorios.</string>
+    <string name="main_empty_state_title">Ups… No hay recordatorios</string>
+    <string name="main_empty_state_description">Toca %1$s para añadir uno.</string>
+
+    <string name="main_error_state_title">Ha ocurrido un error</string>
+    <string name="main_error_state_description">Por favor, intente más tarde.</string>
 
     <string name="editor_title_add">Crear Recordatorio</string>
     <string name="editor_title_edit">Editar Recordatorio</string>
@@ -26,6 +30,13 @@
     <string name="repeat_option_month">Mes</string>
     <string name="repeat_option_year">Año</string>
     <string name="editor_tag_label">Etiquetas</string>
+    <string name="editor_priority_label">Prioridad</string>
+    <string name="priority_low">Baja</string>
+    <string name="priority_medium">Media</string>
+    <string name="priority_high">Alta</string>
+    <string name="common_filter_label">Filtrar</string>
+    <string name="common_filter_apply">Aplicar</string>
+    <string name="common_filter_clear">Limpiar</string>
 
     <string name="tag_all">Todos</string>
 
@@ -43,4 +54,12 @@
     <string name="main_delete_tag_message">¿Estás seguro de que quieres eliminar \"%1$s\"?</string>
     <string name="main_delete_reminder_title">Eliminar Recordatorio</string>
     <string name="main_delete_reminder_message">¿Estás seguro de que quieres eliminar \"%1$s\"? Se eliminarán todas las repeticiones futuras.</string>
+
+    <string name="snooze_15_min">Posponer 15 min</string>
+    <string name="snooze_1_hour">Posponer 1 hora</string>
+
+    <string name="repeat_short_daily">Diario</string>
+    <string name="repeat_short_weekly">Semanal</string>
+    <string name="repeat_short_monthly">Mensual</string>
+    <string name="repeat_short_yearly">Anual</string>
 </resources>

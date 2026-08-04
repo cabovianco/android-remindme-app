@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -35,10 +38,10 @@ import com.cabovianco.remindme.domain.model.TAG_COLORS
 import com.cabovianco.remindme.domain.model.TAG_ICONS
 import com.cabovianco.remindme.domain.model.TagColor
 import com.cabovianco.remindme.domain.model.TagIcon
-import com.cabovianco.remindme.presentation.ui.screen.shared.BottomActionButton
+import com.cabovianco.remindme.presentation.ui.screen.shared.AppButton
 import com.cabovianco.remindme.presentation.ui.screen.shared.HorizontalSelector
 import com.cabovianco.remindme.presentation.ui.screen.shared.NavigationTopBar
-import com.cabovianco.remindme.presentation.ui.screen.shared.form.PrimaryTextField
+import com.cabovianco.remindme.presentation.ui.screen.shared.form.AppTextField
 import com.cabovianco.remindme.presentation.ui.screen.shared.toResId
 import com.cabovianco.remindme.presentation.viewmodel.CreateTagViewModel
 
@@ -59,7 +62,11 @@ fun CreateTagScreen(
             )
         },
         bottomBar = {
-            BottomActionButton(
+            AppButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(16.dp),
                 text = stringResource(R.string.common_btn_save),
                 enabled = uiState.isValid,
                 onClick = {
@@ -98,7 +105,7 @@ private fun CreateTagContent(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        PrimaryTextField(
+        AppTextField(
             value = name,
             onValueChange = onNameChange,
             label = stringResource(R.string.create_tag_name_hint),
@@ -131,7 +138,7 @@ private fun TagIconSelector(
         label = stringResource(R.string.create_tag_icon_label),
         icon = {
             Icon(
-                painter = painterResource(R.drawable.icon),
+                painter = painterResource(R.drawable.ic_tag_icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -162,7 +169,7 @@ private fun TagColorSelector(
         label = stringResource(R.string.create_tag_color_label),
         icon = {
             Icon(
-                painter = painterResource(R.drawable.color),
+                painter = painterResource(R.drawable.ic_tag_color),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )

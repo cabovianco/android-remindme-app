@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PrimaryTextField(
+fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -25,18 +25,27 @@ fun PrimaryTextField(
         modifier = modifier,
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = label) },
+        label = {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
         isError = isError,
         singleLine = singleLine,
         maxLines = maxLines,
         minLines = minLines,
         shape = RoundedCornerShape(20.dp),
         colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
             unfocusedBorderColor = Color.Transparent,
             errorContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
         )
     )
 }

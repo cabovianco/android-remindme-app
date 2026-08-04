@@ -11,12 +11,15 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,7 +43,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.cabovianco.remindme.R
-import com.cabovianco.remindme.presentation.ui.screen.shared.BottomActionButton
+import com.cabovianco.remindme.presentation.ui.screen.shared.AppButton
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -177,10 +180,13 @@ private fun PermissionStepLayout(
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            BottomActionButton(
+            AppButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(24.dp),
                 text = stringResource(R.string.permissions_btn_continue),
-                onClick = onButtonClick,
-                paddingValues = PaddingValues(24.dp)
+                onClick = onButtonClick
             )
         }
     ) {
@@ -223,13 +229,13 @@ private fun getPermissionStep(type: PermissionStepType): PermissionStep {
         PermissionStepType.Notifications -> PermissionStep(
             title = stringResource(R.string.permissions_notif_title),
             description = stringResource(R.string.permissions_notif_desc),
-            icon = painterResource(R.drawable.notification_permission)
+            icon = painterResource(R.drawable.illustration_notification)
         )
 
         PermissionStepType.ExactAlarm -> PermissionStep(
             title = stringResource(R.string.permissions_alarm_title),
             description = stringResource(R.string.permissions_alarm_desc),
-            icon = painterResource(R.drawable.exact_alarm_permission)
+            icon = painterResource(R.drawable.illustration_exact_alarm)
         )
     }
 }

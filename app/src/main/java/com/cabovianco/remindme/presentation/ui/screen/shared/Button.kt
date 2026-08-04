@@ -1,39 +1,66 @@
 package com.cabovianco.remindme.presentation.ui.screen.shared
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 private val ButtonShape = RoundedCornerShape(16.dp)
 private val ButtonHeight = 64.dp
 
+enum class ButtonVariant { Primary, Secondary, Danger }
+
 @Composable
-fun PrimaryButton(
+fun AppButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    variant: ButtonVariant = ButtonVariant.Primary,
+    enabled: Boolean = true,
+    icon: @Composable (() -> Unit)? = null,
+) {
+    val colors = when (variant) {
+        ButtonVariant.Primary -> ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.inverseSurface,
+            contentColor = MaterialTheme.colorScheme.inverseOnSurface
+        )
+
+        ButtonVariant.Secondary -> ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
+
+        ButtonVariant.Danger -> ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        )
+    }
+
+    BaseButton(text, onClick, modifier, enabled, icon, colors)
+}
+
+@Composable
+private fun BaseButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.inverseSurface,
-        contentColor = MaterialTheme.colorScheme.inverseOnSurface
-    ),
-    icon: @Composable (() -> Unit)? = null
+    icon: @Composable (() -> Unit)? = null,
+    colors: ButtonColors
 ) {
     Button(
         modifier = modifier.height(ButtonHeight),
@@ -57,20 +84,28 @@ fun PrimaryButton(
 }
 
 @Composable
-fun BottomActionButton(
-    text: String,
+fun AppIconButton(
     onClick: () -> Unit,
+    icon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    paddingValues: PaddingValues = PaddingValues(16.dp)
+    shape: Shape = RoundedCornerShape(12.dp),
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
-    PrimaryButton(
-        modifier = modifier
-            .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(paddingValues),
-        text = text,
-        enabled = enabled,
-        onClick = onClick
-    )
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = shape,
+        color = containerColor,
+        contentColor = contentColor
+    ) {
+        Box(
+            modifier = Modifier.size(40.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(modifier = Modifier.size(24.dp)) {
+                icon()
+            }
+        }
+    }
 }

@@ -41,7 +41,7 @@ fun NumberStepper(
             verticalAlignment = Alignment.CenterVertically
         ) {
             StepperButton(
-                painter = painterResource(R.drawable.minus),
+                painter = painterResource(R.drawable.ic_minus),
                 enabled = value > range.first,
                 onClick = { onValueChange(value - 1) }
             )
@@ -57,7 +57,7 @@ fun NumberStepper(
             )
 
             StepperButton(
-                painter = painterResource(R.drawable.plus),
+                painter = painterResource(R.drawable.ic_plus),
                 enabled = value < range.last,
                 onClick = { onValueChange(value + 1) }
             )

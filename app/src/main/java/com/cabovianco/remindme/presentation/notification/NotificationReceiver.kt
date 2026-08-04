@@ -1,5 +1,6 @@
 package com.cabovianco.remindme.presentation.notification
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -32,12 +33,26 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getLongExtra("id", -1)
+        val title = intent.getStringExtra("title") ?: ""
+        val description = intent.getStringExtra("description")
+        val action = intent.action
+
+        if (action == ACTION_TRIGGER_SNOOZE) {
+            notificationHelper.showNotification(id, title, description)
+            return
+        }
+
+        if (action == ACTION_SNOOZE_15 || action == ACTION_SNOOZE_60) {
+            val minutes = if (action == ACTION_SNOOZE_15) 15 else 60
+            snooze(context, id, title, description, minutes)
+            return
+        }
+
+        notificationHelper.showNotification(id, title, description)
 
         CoroutineScope(Dispatchers.IO).launch {
             val reminder = getReminderByIdUseCase(id)
                 .first() ?: return@launch
-
-            notificationHelper.showNotification(id, reminder.title, reminder.description)
 
             when (val repeat = reminder.repeat) {
                 is ReminderRepeat.Never -> {
@@ -62,5 +77,31 @@ class NotificationReceiver : BroadcastReceiver() {
                 }
             }
         }
+    }
+
+    private fun snooze(
+        context: Context,
+        id: Long,
+        title: String,
+        description: String?,
+        minutes: Int
+    ) {
+        val newDateTime = ZonedDateTime.now()
+            .plusMinutes(minutes.toLong())
+            .withSecond(0)
+            .withNano(0)
+
+        alarmScheduler.scheduleSnooze(id, title, description, newDateTime)
+
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.cancel(id.toInt())
+    }
+
+    companion object {
+        const val ACTION_SNOOZE_15 = "com.cabovianco.remindme.ACTION_SNOOZE_15"
+        const val ACTION_SNOOZE_60 = "com.cabovianco.remindme.ACTION_SNOOZE_60"
+        const val ACTION_TRIGGER_SNOOZE = "com.cabovianco.remindme.ACTION_TRIGGER_SNOOZE"
     }
 }

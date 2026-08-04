@@ -9,7 +9,8 @@ data class Reminder(
     val description: String?,
     val dateTime: ZonedDateTime,
     val repeat: ReminderRepeat,
+    val priority: ReminderPriority? = null,
     val tags: List<Tag> = emptyList()
 )
 
-fun Reminder.toEntity() = ReminderEntity(id, title, description, dateTime, repeat)
+fun Reminder.toEntity() = ReminderEntity(id, title, description, dateTime, repeat, priority)

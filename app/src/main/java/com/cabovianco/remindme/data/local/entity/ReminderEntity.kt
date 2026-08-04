@@ -3,6 +3,7 @@ package com.cabovianco.remindme.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.cabovianco.remindme.domain.model.Reminder
+import com.cabovianco.remindme.domain.model.ReminderPriority
 import com.cabovianco.remindme.domain.model.ReminderRepeat
 import java.time.ZonedDateTime
 
@@ -13,7 +14,8 @@ data class ReminderEntity(
     val title: String,
     val description: String?,
     val dateTime: ZonedDateTime,
-    val repeat: ReminderRepeat
+    val repeat: ReminderRepeat,
+    val priority: ReminderPriority?
 )
 
-fun ReminderEntity.toDomain() = Reminder(id, title, description, dateTime, repeat)
+fun ReminderEntity.toDomain() = Reminder(id, title, description, dateTime, repeat, priority)

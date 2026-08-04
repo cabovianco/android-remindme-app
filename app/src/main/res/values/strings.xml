@@ -10,7 +10,11 @@
     <string name="permissions_alarm_desc">Enable exact alarms to ensure your reminders trigger at the precise time, even when the device is idle.</string>
     <string name="permissions_btn_continue">Continue</string>
 
-    <string name="main_empty_state_label">No reminders yet.</string>
+    <string name="main_empty_state_title">Oops..There are no reminders</string>
+    <string name="main_empty_state_description">Tap %1$s to add one.</string>
+
+    <string name="main_error_state_title">An error has occurred</string>
+    <string name="main_error_state_description">Please try again later.</string>
 
     <string name="editor_title_add">Create Reminder</string>
     <string name="editor_title_edit">Edit Reminder</string>
@@ -25,6 +29,13 @@
     <string name="repeat_option_month">Month</string>
     <string name="repeat_option_year">Year</string>
     <string name="editor_tag_label">Tags</string>
+    <string name="editor_priority_label">Priority</string>
+    <string name="priority_low">Low</string>
+    <string name="priority_medium">Medium</string>
+    <string name="priority_high">High</string>
+    <string name="common_filter_label">Filter</string>
+    <string name="common_filter_apply">Apply</string>
+    <string name="common_filter_clear">Clear</string>
 
     <string name="tag_all">All</string>
 
@@ -42,4 +53,12 @@
     <string name="main_delete_tag_message">Are you sure you want to delete \"%1$s\"?</string>
     <string name="main_delete_reminder_title">Delete Reminder</string>
     <string name="main_delete_reminder_message">Are you sure you want to delete \"%1$s\"? All future occurrences will be removed.</string>
+
+    <string name="snooze_15_min">Snooze 15 min</string>
+    <string name="snooze_1_hour">Snooze 1 hour</string>
+
+    <string name="repeat_short_daily">Daily</string>
+    <string name="repeat_short_weekly">Weekly</string>
+    <string name="repeat_short_monthly">Monthly</string>
+    <string name="repeat_short_yearly">Yearly</string>
 </resources>

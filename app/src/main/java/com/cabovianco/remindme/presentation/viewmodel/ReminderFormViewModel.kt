@@ -3,21 +3,25 @@ package com.cabovianco.remindme.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cabovianco.remindme.domain.model.Reminder
+import com.cabovianco.remindme.domain.model.ReminderPriority
 import com.cabovianco.remindme.domain.model.ReminderRepeat
 import com.cabovianco.remindme.domain.model.Tag
+import com.cabovianco.remindme.domain.usecase.AdjustReminderRepeatUseCase
 import com.cabovianco.remindme.domain.usecase.GetAllTagsUseCase
+import com.cabovianco.remindme.domain.usecase.ReplaceDateKeepingTimeUseCase
 import com.cabovianco.remindme.presentation.state.ReminderFormUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import java.time.DayOfWeek
-import java.time.Instant
-import java.time.ZoneId
 
 open class ReminderFormViewModel(
-    private val getAllTagsUseCase: GetAllTagsUseCase
+    private val getAllTagsUseCase: GetAllTagsUseCase,
+    private val adjustReminderRepeatUseCase: AdjustReminderRepeatUseCase,
+    private val replaceDateKeepingTimeUseCase: ReplaceDateKeepingTimeUseCase
 ) : ViewModel() {
     protected val mutableUiState: MutableStateFlow<ReminderFormUiState> =
         MutableStateFlow(ReminderFormUiState())
@@ -29,6 +33,7 @@ open class ReminderFormViewModel(
 
     private fun loadTags() {
         getAllTagsUseCase()
+            .catch { emit(emptyList()) }
             .onEach { tags ->
                 mutableUiState.update { it.copy(tags = tags) }
             }
@@ -44,16 +49,9 @@ open class ReminderFormViewModel(
     }
 
     fun onReminderDateChange(selectedDateMillis: Long) {
-        val date = Instant.ofEpochMilli(selectedDateMillis)
-            .atZone(ZoneId.of("UTC"))
-            .toLocalDate()
-
         mutableUiState.update {
             it.copy(
-                dateTime = it.dateTime
-                    .withYear(date.year)
-                    .withMonth(date.monthValue)
-                    .withDayOfMonth(date.dayOfMonth)
+                dateTime = replaceDateKeepingTimeUseCase(it.dateTime, selectedDateMillis)
             )
         }
     }
@@ -80,15 +78,13 @@ open class ReminderFormViewModel(
 
     fun onReminderRepeatFrequencyChange(repeat: ReminderRepeat) {
         mutableUiState.update {
-            val currentInterval = it.repeat.interval
-            var repeat = repeat.copyWith(currentInterval)
-
-            if (repeat is ReminderRepeat.Weekly && repeat.days.isEmpty()) {
-                val dayOfReminder = it.dateTime.dayOfWeek
-                repeat = repeat.copy(days = setOf(dayOfReminder))
-            }
-
-            it.copy(repeat = repeat)
+            it.copy(
+                repeat = adjustReminderRepeatUseCase(
+                    it.repeat,
+                    repeat,
+                    it.dateTime
+                )
+            )
         }
     }
 
@@ -99,6 +95,13 @@ open class ReminderFormViewModel(
             val days = if (day in weekly.days) weekly.days - day else weekly.days + day
 
             it.copy(repeat = weekly.copy(days = days))
+        }
+    }
+
+    fun onReminderPriorityChange(priority: ReminderPriority?) {
+        mutableUiState.update {
+            val newPriority = if (it.priority == priority) null else priority
+            it.copy(priority = newPriority)
         }
     }
 
@@ -117,6 +120,7 @@ open class ReminderFormViewModel(
             description = description,
             dateTime = dateTime,
             repeat = repeat,
+            priority = priority,
             tags = selectedTags.toList()
         )
     }
