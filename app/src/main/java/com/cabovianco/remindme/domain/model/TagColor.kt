@@ -20,11 +20,11 @@ sealed class TagColor(
 ) {
     @Serializable
     @SerialName("red")
-    object Red : TagColor(foreground = 0xFFFFFFFF, background = 0xFF984343)
+    object Red : TagColor(foreground = 0xFFb46a4f, background = 0xFF984343)
 
     @Serializable
     @SerialName("orange")
-    object Orange : TagColor(foreground = 0xFFFFFFFF, background = 0xFFb46a4f)
+    object Orange : TagColor(foreground = 0xFF984343, background = 0xFFb46a4f)
 
     @Serializable
     @SerialName("green")

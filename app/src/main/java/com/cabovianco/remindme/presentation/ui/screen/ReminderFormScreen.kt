@@ -3,38 +3,35 @@ package com.cabovianco.remindme.presentation.ui.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -46,22 +43,27 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cabovianco.remindme.R
+import com.cabovianco.remindme.domain.model.ReminderPriority
 import com.cabovianco.remindme.domain.model.ReminderRepeat
 import com.cabovianco.remindme.domain.model.Tag
-import com.cabovianco.remindme.presentation.ui.screen.shared.BottomActionButton
+import com.cabovianco.remindme.presentation.ui.screen.shared.AppBottomSheet
+import com.cabovianco.remindme.presentation.ui.screen.shared.AppButton
+import com.cabovianco.remindme.presentation.ui.screen.shared.CreateTagButton
 import com.cabovianco.remindme.presentation.ui.screen.shared.HorizontalSelector
 import com.cabovianco.remindme.presentation.ui.screen.shared.InputHeader
 import com.cabovianco.remindme.presentation.ui.screen.shared.NavigationTopBar
+import com.cabovianco.remindme.presentation.ui.screen.shared.PriorityChip
 import com.cabovianco.remindme.presentation.ui.screen.shared.SelectionCard
 import com.cabovianco.remindme.presentation.ui.screen.shared.TagChip
+import com.cabovianco.remindme.presentation.ui.screen.shared.form.AppTextField
 import com.cabovianco.remindme.presentation.ui.screen.shared.form.NumberStepper
-import com.cabovianco.remindme.presentation.ui.screen.shared.form.PrimaryTextField
 import com.cabovianco.remindme.presentation.viewmodel.ReminderFormViewModel
 import java.time.DayOfWeek
 import java.time.Instant
@@ -86,7 +88,11 @@ fun ReminderFormScreen(
         modifier = modifier,
         topBar = { NavigationTopBar(title = title, onBackClick = onBackClick) },
         bottomBar = {
-            BottomActionButton(
+            AppButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(16.dp),
                 text = stringResource(R.string.common_btn_save),
                 enabled = uiState.isValid,
                 onClick = onSaveClick
@@ -113,6 +119,8 @@ fun ReminderFormScreen(
             onRepeatIntervalChange = { viewModel.onReminderRepeatIntervalChange(it) },
             onRepeatFrequencyChange = { viewModel.onReminderRepeatFrequencyChange(it) },
             onRepeatDayToggle = { viewModel.onReminderRepeatDayToggle(it) },
+            priority = uiState.priority,
+            onPriorityChange = { viewModel.onReminderPriorityChange(it) },
             tags = uiState.tags,
             selectedTags = uiState.selectedTags,
             onTagSelected = { viewModel.onTagSelected(it) },
@@ -139,6 +147,8 @@ private fun ReminderFormContent(
     onRepeatIntervalChange: (Int) -> Unit,
     onRepeatFrequencyChange: (ReminderRepeat) -> Unit,
     onRepeatDayToggle: (DayOfWeek) -> Unit,
+    priority: ReminderPriority?,
+    onPriorityChange: (ReminderPriority?) -> Unit,
     tags: List<Tag>,
     selectedTags: Set<Tag>,
     onTagSelected: (Tag) -> Unit,
@@ -170,6 +180,12 @@ private fun ReminderFormContent(
             modifier = Modifier.fillMaxWidth()
         )
 
+        PrioritySelectionSection(
+            selectedPriority = priority,
+            onPrioritySelected = onPriorityChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+
         TagSelectionSection(
             tags = tags,
             selectedTags = selectedTags,
@@ -192,7 +208,7 @@ private fun TitleDescriptionSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        PrimaryTextField(
+        AppTextField(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             onValueChange = onTitleChange,
@@ -200,7 +216,7 @@ private fun TitleDescriptionSection(
             singleLine = true
         )
 
-        PrimaryTextField(
+        AppTextField(
             modifier = Modifier.fillMaxWidth(),
             value = description ?: "",
             onValueChange = onDescriptionChange,
@@ -276,7 +292,7 @@ private fun DateField(
         title = stringResource(R.string.editor_date_label),
         icon = {
             Icon(
-                painter = painterResource(R.drawable.calendar),
+                painter = painterResource(R.drawable.ic_calendar),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -286,7 +302,7 @@ private fun DateField(
     )
 
     if (showDialog) {
-        DatePickerDialog(
+        DatePickerBottomSheet(
             selectedDateMillis = selectedDateMillis,
             onDismiss = { showDialog = false },
             onConfirm = {
@@ -299,7 +315,7 @@ private fun DateField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DatePickerDialog(
+private fun DatePickerBottomSheet(
     selectedDateMillis: Long,
     onDismiss: () -> Unit,
     onConfirm: (Long) -> Unit,
@@ -317,37 +333,28 @@ private fun DatePickerDialog(
         }
     )
 
-    val colors = DatePickerDefaults.colors(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer
-    )
-
-    DatePickerDialog(
+    AppBottomSheet(
         modifier = modifier,
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
+        onDismiss = onDismiss,
+        content = {
+            DatePicker(
+                state = datePickerState,
+                showModeToggle = false,
+                title = null,
+                headline = null,
+                colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                )
+            )
+        },
+        actions = {
+            AppButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.common_btn_save),
                 onClick = { datePickerState.selectedDateMillis?.let { onConfirm(it) } }
-            ) {
-                Text(text = stringResource(R.string.common_btn_save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(android.R.string.cancel))
-            }
-        },
-        shape = MaterialTheme.shapes.extraLarge,
-        tonalElevation = 8.dp,
-        colors = colors
-    ) {
-        DatePicker(
-            state = datePickerState,
-            showModeToggle = false,
-            title = null,
-            headline = null,
-            colors = colors
-        )
-    }
+            )
+        }
+    )
 }
 
 @Composable
@@ -364,7 +371,7 @@ private fun TimeField(
         title = stringResource(R.string.editor_time_label),
         icon = {
             Icon(
-                painter = painterResource(R.drawable.time),
+                painter = painterResource(R.drawable.ic_schedule),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -374,7 +381,7 @@ private fun TimeField(
     )
 
     if (showDialog) {
-        TimePickerDialog(
+        TimePickerBottomSheet(
             hour = hour,
             minute = minute,
             onDismiss = { showDialog = false },
@@ -388,7 +395,7 @@ private fun TimeField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TimePickerDialog(
+private fun TimePickerBottomSheet(
     hour: Int,
     minute: Int,
     onDismiss: () -> Unit,
@@ -401,51 +408,23 @@ private fun TimePickerDialog(
         is24Hour = true
     )
 
-    BasicAlertDialog(
+    AppBottomSheet(
         modifier = modifier,
-        onDismissRequest = onDismiss
-    ) {
-        Surface(
-            modifier = Modifier
-                .width(IntrinsicSize.Min)
-                .height(IntrinsicSize.Min),
-            shape = MaterialTheme.shapes.extraLarge,
-            tonalElevation = 8.dp,
-            color = MaterialTheme.colorScheme.surfaceContainer
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                TimePicker(modifier = Modifier.padding(16.dp), state = timePickerState)
-
-                TimePickerActions(
-                    onDismiss = onDismiss,
-                    onConfirm = { onConfirm(timePickerState.hour, timePickerState.minute) }
-                )
-            }
+        onDismiss = onDismiss,
+        content = {
+            TimePicker(
+                modifier = Modifier.fillMaxWidth(),
+                state = timePickerState
+            )
+        },
+        actions = {
+            AppButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.common_btn_save),
+                onClick = { onConfirm(timePickerState.hour, timePickerState.minute) }
+            )
         }
-    }
-}
-
-@Composable
-private fun TimePickerActions(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(end = 6.dp, bottom = 8.dp),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextButton(onClick = onDismiss) {
-            Text(text = stringResource(android.R.string.cancel))
-        }
-
-        TextButton(onClick = onConfirm) {
-            Text(text = stringResource(R.string.common_btn_save))
-        }
-    }
+    )
 }
 
 @Composable
@@ -480,7 +459,7 @@ private fun RepeatSection(
                     text = stringResource(R.string.editor_repeat_label),
                     icon = {
                         Icon(
-                            painter = painterResource(R.drawable.repeat),
+                            painter = painterResource(R.drawable.ic_repeat),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -493,7 +472,11 @@ private fun RepeatSection(
                 ) {
                     Switch(
                         checked = isEnabled,
-                        onCheckedChange = onEnabledChange
+                        onCheckedChange = onEnabledChange,
+                        colors = SwitchDefaults.colors(
+                            uncheckedTrackColor = Color.Transparent,
+                            uncheckedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+                        )
                     )
                 }
             }
@@ -535,8 +518,8 @@ private fun RepeatOptions(
         ) {
             Text(
                 text = stringResource(R.string.repeat_every_label),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
 
             Row(
@@ -669,6 +652,34 @@ private fun DayCircle(
 }
 
 @Composable
+private fun PrioritySelectionSection(
+    selectedPriority: ReminderPriority?,
+    onPrioritySelected: (ReminderPriority) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val options = ReminderPriority.entries
+
+    HorizontalSelector(
+        modifier = modifier,
+        label = stringResource(R.string.editor_priority_label),
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_priority),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        },
+        options = options
+    ) { priority ->
+        PriorityChip(
+            priority = priority,
+            isSelected = priority == selectedPriority,
+            onClick = { onPrioritySelected(priority) }
+        )
+    }
+}
+
+@Composable
 private fun TagSelectionSection(
     tags: List<Tag>,
     selectedTags: Set<Tag>,
@@ -681,7 +692,7 @@ private fun TagSelectionSection(
         label = stringResource(R.string.editor_tag_label),
         icon = {
             Icon(
-                painter = painterResource(R.drawable.tag),
+                painter = painterResource(R.drawable.ic_tag),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )
@@ -695,24 +706,6 @@ private fun TagSelectionSection(
             onClick = { onTagSelected(tag) },
             icon = tag.icon,
             color = tag.color
-        )
-    }
-}
-
-@Composable
-private fun CreateTagButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(
-        modifier = modifier.size(32.dp),
-        onClick = onClick,
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    ) {
-        Icon(
-            modifier = Modifier.size(22.dp),
-            painter = painterResource(R.drawable.add),
-            contentDescription = null
         )
     }
 }

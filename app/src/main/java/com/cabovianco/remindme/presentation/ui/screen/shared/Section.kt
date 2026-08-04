@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -34,22 +35,29 @@ fun <T> HorizontalSelector(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         InputHeader(text = label, icon = icon)
 
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = horizontalArrangement,
-            contentPadding = contentPadding,
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            contentAlignment = Alignment.CenterStart
         ) {
-            items(options) {
-                itemContent(it)
-            }
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = horizontalArrangement,
+                contentPadding = contentPadding,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(options) {
+                    itemContent(it)
+                }
 
-            afterContent?.let {
-                item { it() }
+                afterContent?.let {
+                    item { it() }
+                }
             }
         }
     }
@@ -109,7 +117,7 @@ fun InputHeader(
 
         Text(
             text = text,
-            style = MaterialTheme.typography.titleSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
         )
     }

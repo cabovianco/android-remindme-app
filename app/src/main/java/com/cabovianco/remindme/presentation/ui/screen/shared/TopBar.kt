@@ -32,7 +32,7 @@ fun NavigationTopBar(
             if (onBackClick != null) {
                 IconButton(onClick = onBackClick) {
                     Icon(
-                        painter = painterResource(R.drawable.arrow_left),
+                        painter = painterResource(R.drawable.ic_arrow_back),
                         contentDescription = null
                     )
                 }

@@ -2,8 +2,10 @@ package com.cabovianco.remindme.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.cabovianco.remindme.data.alarm.AlarmScheduler
+import com.cabovianco.remindme.domain.usecase.AdjustReminderRepeatUseCase
 import com.cabovianco.remindme.domain.usecase.GetAllTagsUseCase
 import com.cabovianco.remindme.domain.usecase.GetReminderByIdUseCase
+import com.cabovianco.remindme.domain.usecase.ReplaceDateKeepingTimeUseCase
 import com.cabovianco.remindme.domain.usecase.UpdateReminderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.filterNotNull
@@ -16,8 +18,10 @@ class EditReminderViewModel @Inject constructor(
     private val getReminderByIdUseCase: GetReminderByIdUseCase,
     private val updateReminderUseCase: UpdateReminderUseCase,
     private val getAllTagsUseCase: GetAllTagsUseCase,
+    private val adjustReminderRepeatUseCase: AdjustReminderRepeatUseCase,
+    private val replaceDateKeepingTimeUseCase: ReplaceDateKeepingTimeUseCase,
     private val alarmScheduler: AlarmScheduler
-) : ReminderFormViewModel(getAllTagsUseCase) {
+) : ReminderFormViewModel(getAllTagsUseCase, adjustReminderRepeatUseCase, replaceDateKeepingTimeUseCase) {
     fun loadReminder(id: Long) {
         viewModelScope.launch {
             getReminderByIdUseCase(id)
@@ -31,6 +35,7 @@ class EditReminderViewModel @Inject constructor(
                                 description = description,
                                 dateTime = dateTime,
                                 repeat = repeat,
+                                priority = priority,
                                 selectedTags = tags.toSet()
                             )
                         }

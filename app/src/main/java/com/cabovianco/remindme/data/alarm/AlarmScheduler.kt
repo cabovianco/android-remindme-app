@@ -8,22 +8,38 @@ import android.os.Build
 import com.cabovianco.remindme.domain.model.Reminder
 import com.cabovianco.remindme.presentation.notification.NotificationReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.ZonedDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AlarmScheduler @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     fun schedule(reminder: Reminder) {
-        val id = reminder.id
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("id", reminder.id)
+            putExtra("title", reminder.title)
+            putExtra("description", reminder.description)
+        }
 
-        val intent = Intent(context, NotificationReceiver::class.java)
-            .putExtra("id", id)
+        scheduleAlarm(reminder.id.toInt(), reminder.dateTime, intent)
+    }
 
+    fun scheduleSnooze(id: Long, title: String, description: String?, dateTime: ZonedDateTime) {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            action = NotificationReceiver.ACTION_TRIGGER_SNOOZE
+            putExtra("id", id)
+            putExtra("title", title)
+            putExtra("description", description)
+        }
+        scheduleAlarm(id.toInt(), dateTime, intent)
+    }
+
+    private fun scheduleAlarm(requestCode: Int, dateTime: ZonedDateTime, intent: Intent) {
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            id.toInt(),
+            requestCode,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -36,7 +52,7 @@ class AlarmScheduler @Inject constructor(
 
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            reminder.dateTime.toInstant().toEpochMilli(),
+            dateTime.toInstant().toEpochMilli(),
             pendingIntent
         )
     }

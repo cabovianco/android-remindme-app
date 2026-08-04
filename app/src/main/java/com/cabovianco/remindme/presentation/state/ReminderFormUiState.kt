@@ -1,5 +1,6 @@
 package com.cabovianco.remindme.presentation.state
 
+import com.cabovianco.remindme.domain.model.ReminderPriority
 import com.cabovianco.remindme.domain.model.ReminderRepeat
 import com.cabovianco.remindme.domain.model.Tag
 import java.time.ZonedDateTime
@@ -14,6 +15,7 @@ data class ReminderFormUiState(
         .withSecond(0)
         .withNano(0),
     val repeat: ReminderRepeat = ReminderRepeat.Never,
+    val priority: ReminderPriority? = null,
     val tags: List<Tag> = emptyList(),
     val selectedTags: Set<Tag> = emptySet()
 ) {
