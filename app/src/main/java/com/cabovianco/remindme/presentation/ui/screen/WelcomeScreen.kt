@@ -54,7 +54,7 @@ private fun WelcomeContent(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.common_app_name),
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.displayLarge.copy(fontFamily = cherryRegular)
         )
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="common_app_name">RemindMe</string>
+    <string name="app_name">RemindMe</string>
 
     <string name="welcome_app_description">Tus recordatorios, privados y sin conexión.</string>
     <string name="welcome_btn_start">Empezar</string>
