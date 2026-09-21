@@ -45,18 +45,18 @@ fun ErrorState(modifier: Modifier = Modifier) {
         title = {
             Text(
                 text = stringResource(R.string.main_error_state_title),
-                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.error,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.error
+                style = MaterialTheme.typography.headlineSmall
             )
         },
         description = {
             Text(
+                modifier = Modifier.alpha(0.7f),
                 text = stringResource(R.string.main_error_state_description),
-                style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.alpha(0.7f)
+                style = MaterialTheme.typography.bodyLarge
             )
         },
         icon = {
@@ -79,9 +79,9 @@ fun EmptyState(modifier: Modifier = Modifier) {
         title = {
             Text(
                 text = stringResource(R.string.main_empty_state_title),
-                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall
             )
         },
         description = {
@@ -95,7 +95,7 @@ private fun EmptyStateDescription() {
     val description = stringResource(R.string.main_empty_state_description)
     val color = LocalContentColor.current.copy(alpha = 0.7f)
 
-    val parts = description.split("%1\$s", limit = 2)
+    val parts = description.split($$"%1$s", limit = 2)
     val before = parts.getOrElse(0) { "" }
     val after = parts.getOrElse(1) { "" }
 
@@ -124,9 +124,9 @@ private fun EmptyStateDescription() {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
+                    modifier = Modifier.size(16.dp),
                     painter = painterResource(R.drawable.ic_add),
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
                     tint = color
                 )
             }
@@ -135,10 +135,10 @@ private fun EmptyStateDescription() {
 
     Text(
         text = annotatedText,
-        inlineContent = inlineContent,
-        style = MaterialTheme.typography.bodyLarge,
+        color = color,
         textAlign = TextAlign.Center,
-        color = color
+        inlineContent = inlineContent,
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 

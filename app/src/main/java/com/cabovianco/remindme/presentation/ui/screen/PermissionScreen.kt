@@ -120,8 +120,8 @@ private fun NotificationStep(
     }
 
     PermissionStepLayout(
-        type = PermissionStepType.Notifications,
         modifier = modifier,
+        type = PermissionStepType.Notifications,
         onButtonClick = {
             val status = permissionState.status
             if (!status.isGranted && !status.shouldShowRationale && notificationRequested) {
@@ -157,8 +157,8 @@ private fun AlarmStep(
     }
 
     PermissionStepLayout(
-        type = PermissionStepType.ExactAlarm,
         modifier = modifier,
+        type = PermissionStepType.ExactAlarm,
         onButtonClick = {
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
                 data = Uri.fromParts("package", context.packageName, null)
@@ -195,29 +195,29 @@ private fun PermissionStepLayout(
                 .fillMaxSize()
                 .padding(it)
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
+                modifier = Modifier.size(128.dp),
                 painter = step.icon,
-                contentDescription = null,
-                modifier = Modifier.size(128.dp)
+                contentDescription = null
             )
 
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
                 text = step.title,
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = step.description,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

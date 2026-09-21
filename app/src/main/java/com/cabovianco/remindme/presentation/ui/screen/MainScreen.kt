@@ -243,28 +243,28 @@ private fun MainContent(
 ) {
     Column(
         modifier = modifier.padding(top = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DateRangePicker(
+            modifier = Modifier.fillMaxWidth(),
             selectedDate = selectedDate,
             onSelectedDate = onSelectedDateChange,
             selectableDates = selectableDates,
-            isLoading = uiState is MainState.Loading,
-            modifier = Modifier.fillMaxWidth()
+            isLoading = uiState is MainState.Loading
         )
 
         FilterHeader(
+            modifier = Modifier.fillMaxWidth(),
             activeFiltersCount = selectedTags.size + (if (selectedPriority != null) 1 else 0),
-            onFilterClick = onFilterClick,
-            modifier = Modifier.fillMaxWidth()
+            onFilterClick = onFilterClick
         )
 
         MainStateContent(
+            modifier = Modifier.fillMaxSize(),
             uiState = uiState,
             onEditReminder = onEditReminder,
-            onDeleteReminder = onDeleteReminder,
-            modifier = Modifier.fillMaxSize()
+            onDeleteReminder = onDeleteReminder
         )
     }
 }
@@ -297,10 +297,10 @@ private fun MainStateContent(
         when (uiState) {
             is MainState.Success -> {
                 ReminderList(
+                    modifier = Modifier.fillMaxSize(),
                     reminders = uiState.reminders,
                     onEditReminder = onEditReminder,
-                    onDeleteReminder = onDeleteReminder,
-                    modifier = Modifier.fillMaxSize()
+                    onDeleteReminder = onDeleteReminder
                 )
             }
 
@@ -344,10 +344,10 @@ private fun DateRangePicker(
             ) {
                 selectableDates.forEach { date ->
                     DateItem(
+                        modifier = Modifier.weight(1f),
                         date = date,
                         isSelected = selectedDate.toLocalDate() == date.toLocalDate(),
-                        onClick = { onSelectedDate(date) },
-                        modifier = Modifier.weight(1f)
+                        onClick = { onSelectedDate(date) }
                     )
                 }
             }
@@ -366,19 +366,19 @@ private fun DateItem(
 
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
-            onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
+            onClick = onClick,
             shape = RoundedCornerShape(12.dp),
             color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
             contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
         ) {
             DateItemContent(
-                date = date,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                date = date
             )
         }
 
@@ -403,16 +403,16 @@ private fun DateItemContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            modifier = Modifier.alpha(0.6f),
             text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
                 .capitalizeFirst(),
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.alpha(0.6f)
+            style = MaterialTheme.typography.labelMedium
         )
 
         Text(
             text = date.dayOfMonth.toString(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }
@@ -610,16 +610,16 @@ private fun FilterBottomSheetActions(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         AppButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.common_filter_apply),
             onClick = onApply,
-            modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.Primary
         )
 
         AppButton(
+            modifier = Modifier.fillMaxWidth(),
             text = stringResource(R.string.common_filter_clear),
             onClick = onClear,
-            modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.Secondary
         )
     }
@@ -636,8 +636,8 @@ private fun DeleteConfirmationBottomSheet(
 ) {
     AppBottomSheet(
         modifier = modifier,
-        title = title,
         onDismiss = onDismiss,
+        title = title,
         icon = {
             Icon(
                 modifier = Modifier.size(80.dp),
@@ -648,19 +648,19 @@ private fun DeleteConfirmationBottomSheet(
         },
         content = {
             Text(
-                text = message,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.7f)
+                    .alpha(0.7f),
+                text = message,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge
             )
         },
         actions = {
             DeleteConfirmationActions(
+                modifier = Modifier.fillMaxWidth(),
                 onConfirm = onConfirm,
-                onDismiss = onDismiss,
-                modifier = Modifier.fillMaxWidth()
+                onDismiss = onDismiss
             )
         }
     )
@@ -779,18 +779,18 @@ private fun ReminderEntryContent(
 ) {
     Column(modifier = modifier) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = title,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth()
+            style = MaterialTheme.typography.titleMedium
         )
 
         description?.let { text ->
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth()
+                style = MaterialTheme.typography.bodyMedium
             )
         }
 
@@ -801,11 +801,11 @@ private fun ReminderEntryContent(
         )
 
         ReminderMetadata(
+            modifier = Modifier.fillMaxWidth(),
             time = date,
             tags = tags,
             repeat = repeat,
-            priority = priority,
-            modifier = Modifier.fillMaxWidth()
+            priority = priority
         )
     }
 }
@@ -816,11 +816,11 @@ private fun ReminderDate(
     modifier: Modifier = Modifier
 ) {
     Text(
+        modifier = modifier,
         text = date,
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.labelSmall
     )
 }
 
@@ -849,8 +849,8 @@ private fun ReminderMetadata(
 
         Row(
             modifier = Modifier.padding(start = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             priority?.let {
                 ReminderPriorityIcon(priority = it)
@@ -873,8 +873,8 @@ private fun ReminderTimeChip(
         contentColor = MaterialTheme.colorScheme.primary
     ) {
         ReminderDate(
-            date = time,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            date = time
         )
     }
 }
@@ -904,10 +904,10 @@ private fun ReminderRepeatChip(
 
                 Text(
                     text = repeat.toShortString(),
-                    style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }
@@ -942,10 +942,10 @@ private fun ReminderTagsInfo(
                 contentAlignment = Alignment.TopEnd
             ) {
                 CompactTagChip(
+                    modifier = Modifier.padding(end = if (remaining > 0) 12.dp else 0.dp),
                     text = tag.name,
                     icon = tag.icon,
-                    color = tag.color,
-                    modifier = Modifier.padding(end = if (remaining > 0) 12.dp else 0.dp)
+                    color = tag.color
                 )
 
                 if (remaining > 0) {
@@ -959,8 +959,8 @@ private fun ReminderTagsInfo(
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = "+$remaining",
-                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp)
                             )
                         }
                     }

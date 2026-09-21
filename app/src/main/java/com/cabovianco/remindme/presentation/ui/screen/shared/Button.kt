@@ -50,17 +50,24 @@ fun AppButton(
         )
     }
 
-    BaseButton(text, onClick, modifier, enabled, icon, colors)
+    BaseButton(
+        modifier = modifier,
+        text = text,
+        onClick = onClick,
+        colors = colors,
+        enabled = enabled,
+        icon = icon
+    )
 }
 
 @Composable
 private fun BaseButton(
     text: String,
     onClick: () -> Unit,
+    colors: ButtonColors,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    icon: @Composable (() -> Unit)? = null,
-    colors: ButtonColors
+    icon: @Composable (() -> Unit)? = null
 ) {
     Button(
         modifier = modifier.height(ButtonHeight),
@@ -70,8 +77,8 @@ private fun BaseButton(
         colors = colors
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             icon?.invoke()
 
@@ -93,8 +100,8 @@ fun AppIconButton(
     contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     Surface(
-        onClick = onClick,
         modifier = modifier,
+        onClick = onClick,
         shape = shape,
         color = containerColor,
         contentColor = contentColor

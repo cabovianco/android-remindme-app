@@ -38,9 +38,9 @@ fun AppBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = null,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        dragHandle = null
     ) {
         Column(
             modifier = Modifier
@@ -71,9 +71,9 @@ fun AppBottomSheet(
             title?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineSmall
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

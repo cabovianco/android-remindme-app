@@ -68,25 +68,25 @@ fun CreateTagScreen(
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(16.dp),
                 text = stringResource(R.string.common_btn_save),
-                enabled = uiState.isValid,
                 onClick = {
                     viewModel.onCreateTag()
                     onBackClick()
-                }
+                },
+                enabled = uiState.isValid
             )
         }
     ) { padding ->
         CreateTagContent(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
             name = uiState.name,
             onNameChange = { viewModel.onNameChange(it) },
             icon = uiState.icon,
             onIconChange = { viewModel.onIconChange(it) },
             color = uiState.color,
-            onColorChange = { viewModel.onColorChange(it) },
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp)
+            onColorChange = { viewModel.onColorChange(it) }
         )
     }
 }
@@ -106,11 +106,11 @@ private fun CreateTagContent(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         AppTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = name,
             onValueChange = onNameChange,
             label = stringResource(R.string.create_tag_name_hint),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            singleLine = true
         )
 
         TagIconSelector(
@@ -175,8 +175,8 @@ private fun TagColorSelector(
             )
         },
         options = TAG_COLORS,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        contentPadding = PaddingValues(vertical = 4.dp)
+        contentPadding = PaddingValues(vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         ColorItem(
             color = it,
@@ -198,8 +198,8 @@ private fun IconItem(
     val contentColor = if (isSelected) color else MaterialTheme.colorScheme.onSurfaceVariant
 
     SelectableCircleContainer(
-        onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
+        onClick = onClick
     ) {
         Box(
             modifier = Modifier
@@ -209,10 +209,10 @@ private fun IconItem(
             contentAlignment = Alignment.Center
         ) {
             Icon(
+                modifier = Modifier.size(28.dp),
                 painter = painterResource(icon.toResId()),
                 contentDescription = null,
-                tint = contentColor,
-                modifier = Modifier.size(28.dp)
+                tint = contentColor
             )
         }
     }
@@ -228,8 +228,8 @@ private fun ColorItem(
     val color = Color(color.background)
 
     SelectableCircleContainer(
-        onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
+        onClick = onClick
     ) {
         if (isSelected) {
             Canvas(modifier = Modifier.size(48.dp)) {

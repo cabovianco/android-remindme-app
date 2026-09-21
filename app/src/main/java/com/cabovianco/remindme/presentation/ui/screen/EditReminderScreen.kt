@@ -20,6 +20,7 @@ fun EditReminderScreen(
     }
 
     ReminderFormScreen(
+        modifier = modifier,
         title = stringResource(R.string.editor_title_edit),
         viewModel = viewModel,
         onBackClick = onBackClick,
@@ -27,7 +28,6 @@ fun EditReminderScreen(
             viewModel.saveReminder()
             onBackClick()
         },
-        onCreateTag = onCreateTag,
-        modifier = modifier
+        onCreateTag = onCreateTag
     )
 }

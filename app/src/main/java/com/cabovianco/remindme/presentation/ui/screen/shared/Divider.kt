@@ -21,8 +21,8 @@ fun DashedDivider(
             color = color,
             start = Offset(0f, 0f),
             end = Offset(size.width, 0f),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f),
-            strokeWidth = thickness
+            strokeWidth = thickness,
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
         )
     }
 }

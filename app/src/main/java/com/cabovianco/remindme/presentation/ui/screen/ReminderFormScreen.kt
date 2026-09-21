@@ -72,6 +72,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun ReminderFormScreen(
@@ -94,12 +95,16 @@ fun ReminderFormScreen(
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(16.dp),
                 text = stringResource(R.string.common_btn_save),
-                enabled = uiState.isValid,
-                onClick = onSaveClick
+                onClick = onSaveClick,
+                enabled = uiState.isValid
             )
         }
     ) { padding ->
         ReminderFormContent(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
             title = uiState.title,
             onTitleChange = { viewModel.onReminderTitleChange(it) },
             description = uiState.description,
@@ -124,11 +129,7 @@ fun ReminderFormScreen(
             tags = uiState.tags,
             selectedTags = uiState.selectedTags,
             onTagSelected = { viewModel.onTagSelected(it) },
-            onCreateTag = onCreateTag,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 16.dp)
+            onCreateTag = onCreateTag
         )
     }
 }
@@ -157,18 +158,19 @@ private fun ReminderFormContent(
 ) {
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TitleDescriptionSection(
+            modifier = Modifier.fillMaxWidth(),
             title = title,
             onTitleChange = onTitleChange,
             description = description,
-            onDescriptionChange = onDescriptionChange,
-            modifier = Modifier.fillMaxWidth()
+            onDescriptionChange = onDescriptionChange
         )
 
         ScheduleSection(
+            modifier = Modifier.fillMaxWidth(),
             dateTime = dateTime,
             onDateChange = onDateChange,
             onTimeChange = onTimeChange,
@@ -176,22 +178,21 @@ private fun ReminderFormContent(
             onRepeatEnabledChange = onRepeatEnabledChange,
             onRepeatIntervalChange = onRepeatIntervalChange,
             onRepeatFrequencyChange = onRepeatFrequencyChange,
-            onRepeatDayToggle = onRepeatDayToggle,
-            modifier = Modifier.fillMaxWidth()
+            onRepeatDayToggle = onRepeatDayToggle
         )
 
         PrioritySelectionSection(
+            modifier = Modifier.fillMaxWidth(),
             selectedPriority = priority,
-            onPrioritySelected = onPriorityChange,
-            modifier = Modifier.fillMaxWidth()
+            onPrioritySelected = onPriorityChange
         )
 
         TagSelectionSection(
+            modifier = Modifier.fillMaxWidth(),
             tags = tags,
             selectedTags = selectedTags,
             onTagSelected = onTagSelected,
-            onCreateTagClick = onCreateTag,
-            modifier = Modifier.fillMaxWidth()
+            onCreateTagClick = onCreateTag
         )
     }
 }
@@ -248,29 +249,29 @@ private fun ScheduleSection(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             DateField(
+                modifier = Modifier.weight(1f),
                 selectedDateMillis = dateTime.toLocalDate()
                     .atStartOfDay(ZoneId.of("UTC"))
                     .toInstant()
                     .toEpochMilli(),
-                onDateChange = onDateChange,
-                modifier = Modifier.weight(1f)
+                onDateChange = onDateChange
             )
 
             TimeField(
+                modifier = Modifier.weight(1f),
                 hour = dateTime.hour,
                 minute = dateTime.minute,
-                onTimeChange = onTimeChange,
-                modifier = Modifier.weight(1f)
+                onTimeChange = onTimeChange
             )
         }
 
         RepeatSection(
+            modifier = Modifier.fillMaxWidth(),
             repeat = repeat,
             onEnabledChange = onRepeatEnabledChange,
             onIntervalChange = onRepeatIntervalChange,
             onFrequencyChange = onRepeatFrequencyChange,
-            onDayToggle = onRepeatDayToggle,
-            modifier = Modifier.fillMaxWidth()
+            onDayToggle = onRepeatDayToggle
         )
     }
 }
@@ -290,6 +291,7 @@ private fun DateField(
     SelectionCard(
         modifier = modifier,
         title = stringResource(R.string.editor_date_label),
+        value = date.format(DateTimeFormatter.ofPattern(stringResource(R.string.common_date_format))),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_calendar),
@@ -297,7 +299,6 @@ private fun DateField(
                 tint = MaterialTheme.colorScheme.primary
             )
         },
-        value = date.format(DateTimeFormatter.ofPattern(stringResource(R.string.common_date_format))),
         onClick = { showDialog = true }
     )
 
@@ -339,12 +340,12 @@ private fun DatePickerBottomSheet(
         content = {
             DatePicker(
                 state = datePickerState,
-                showModeToggle = false,
-                title = null,
-                headline = null,
                 colors = DatePickerDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer
-                )
+                ),
+                title = null,
+                headline = null,
+                showModeToggle = false
             )
         },
         actions = {
@@ -369,6 +370,7 @@ private fun TimeField(
     SelectionCard(
         modifier = modifier,
         title = stringResource(R.string.editor_time_label),
+        value = LocalTime.of(hour, minute).format(DateTimeFormatter.ofPattern("HH:mm")),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_schedule),
@@ -376,7 +378,6 @@ private fun TimeField(
                 tint = MaterialTheme.colorScheme.primary
             )
         },
-        value = LocalTime.of(hour, minute).format(DateTimeFormatter.ofPattern("HH:mm")),
         onClick = { showDialog = true }
     )
 
@@ -452,8 +453,8 @@ private fun RepeatSection(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 InputHeader(
                     text = stringResource(R.string.editor_repeat_label),
@@ -483,12 +484,12 @@ private fun RepeatSection(
 
             if (isEnabled) {
                 RepeatOptions(
+                    modifier = Modifier.padding(top = 8.dp),
                     interval = interval,
                     onIntervalChange = onIntervalChange,
                     currentRepeat = repeat,
                     onFrequencyChange = onFrequencyChange,
-                    onDayToggle = onDayToggle,
-                    modifier = Modifier.padding(top = 8.dp)
+                    onDayToggle = onDayToggle
                 )
             }
         }
@@ -513,18 +514,18 @@ private fun RepeatOptions(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(R.string.repeat_every_label),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.titleMedium
             )
 
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 NumberStepper(
                     value = interval,
@@ -552,7 +553,7 @@ private fun RepeatOptions(
                     DayCircle(
                         text = day.getDisplayName(
                             java.time.format.TextStyle.NARROW,
-                            Locale.getDefault()
+                            LocalLocale.current.platformLocale
                         ),
                         isSelected = day in selectedDays,
                         onClick = { onDayToggle(day) }
@@ -579,8 +580,8 @@ private fun FrequencyMenuSelector(
 
     Box(modifier = modifier) {
         Surface(
-            onClick = { expanded = true },
             modifier = Modifier.height(36.dp),
+            onClick = { expanded = true },
             shape = RoundedCornerShape(8.dp),
             color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
@@ -590,8 +591,8 @@ private fun FrequencyMenuSelector(
             ) {
                 Text(
                     text = stringResource(currentRepeat.toLabelRes()),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
         }
@@ -602,7 +603,6 @@ private fun FrequencyMenuSelector(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
                     text = {
                         Text(
                             stringResource(option.toLabelRes()),
@@ -612,7 +612,8 @@ private fun FrequencyMenuSelector(
                     onClick = {
                         onFrequencyChange(option)
                         expanded = false
-                    }
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
                 )
             }
         }
@@ -644,8 +645,8 @@ private fun DayCircle(
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

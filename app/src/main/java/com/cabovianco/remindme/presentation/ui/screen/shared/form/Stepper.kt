@@ -51,9 +51,9 @@ fun NumberStepper(
                     .width(32.dp)
                     .padding(horizontal = 4.dp),
                 text = value.toString(),
-                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium
             )
 
             StepperButton(
