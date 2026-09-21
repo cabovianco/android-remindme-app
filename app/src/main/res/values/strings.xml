@@ -10,7 +10,7 @@
     <string name="permissions_alarm_desc">Enable exact alarms to ensure your reminders trigger at the precise time, even when the device is idle.</string>
     <string name="permissions_btn_continue">Continue</string>
 
-    <string name="main_empty_state_title">Oops… There are no reminders</string>
+    <string name="main_empty_state_title">Oops… No reminders yet</string>
     <string name="main_empty_state_description">Tap %1$s to add one.</string>
 
     <string name="main_error_state_title">An error has occurred</string>
