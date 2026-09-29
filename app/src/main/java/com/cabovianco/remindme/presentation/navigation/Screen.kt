@@ -20,4 +20,7 @@ sealed interface Screen {
 
     @Serializable
     object CreateTagScreen : Screen
+
+    @Serializable
+    object SettingsScreen : Screen
 }

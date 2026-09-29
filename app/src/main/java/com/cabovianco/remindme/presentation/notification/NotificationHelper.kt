@@ -72,12 +72,12 @@ class NotificationHelper @Inject constructor(
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .addAction(
                 0,
-                context.getString(R.string.snooze_15_min),
+                context.getString(R.string.notification_snooze_15_minutes),
                 snooze15PendingIntent
             )
             .addAction(
                 0,
-                context.getString(R.string.snooze_1_hour),
+                context.getString(R.string.notification_snooze_1_hour),
                 snooze60PendingIntent
             )
 

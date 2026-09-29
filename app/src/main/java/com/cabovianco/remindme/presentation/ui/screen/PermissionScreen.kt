@@ -185,7 +185,7 @@ private fun PermissionStepLayout(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(24.dp),
-                text = stringResource(R.string.permissions_btn_continue),
+                text = stringResource(R.string.permission_action_continue),
                 onClick = onButtonClick
             )
         }
@@ -227,14 +227,14 @@ private fun PermissionStepLayout(
 private fun getPermissionStep(type: PermissionStepType): PermissionStep {
     return when (type) {
         PermissionStepType.Notifications -> PermissionStep(
-            title = stringResource(R.string.permissions_notif_title),
-            description = stringResource(R.string.permissions_notif_desc),
+            title = stringResource(R.string.permission_notification_title),
+            description = stringResource(R.string.permission_notification_description),
             icon = painterResource(R.drawable.illustration_notification)
         )
 
         PermissionStepType.ExactAlarm -> PermissionStep(
-            title = stringResource(R.string.permissions_alarm_title),
-            description = stringResource(R.string.permissions_alarm_desc),
+            title = stringResource(R.string.permission_alarm_title),
+            description = stringResource(R.string.permission_alarm_description),
             icon = painterResource(R.drawable.illustration_exact_alarm)
         )
     }

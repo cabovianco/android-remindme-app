@@ -23,12 +23,14 @@ import com.cabovianco.remindme.presentation.ui.screen.CreateTagScreen
 import com.cabovianco.remindme.presentation.ui.screen.EditReminderScreen
 import com.cabovianco.remindme.presentation.ui.screen.MainScreen
 import com.cabovianco.remindme.presentation.ui.screen.PermissionScreen
+import com.cabovianco.remindme.presentation.ui.screen.SettingsScreen
 import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.AppViewModel
 import com.cabovianco.remindme.presentation.viewmodel.CreateTagViewModel
 import com.cabovianco.remindme.presentation.viewmodel.EditReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.MainViewModel
+import com.cabovianco.remindme.presentation.viewmodel.SettingsViewModel
 
 @Composable
 fun AppNavigation(
@@ -104,6 +106,7 @@ fun AppNavigation(
                 onAddReminder = { navController.navigate(Screen.AddReminderScreen) },
                 onEditReminder = { navController.navigate(Screen.EditReminderScreen(it)) },
                 onCreateTag = { navController.navigate(Screen.CreateTagScreen) },
+                onSettingsClick = { navController.navigate(Screen.SettingsScreen) },
                 viewModel = viewModel
             )
         }
@@ -172,6 +175,26 @@ fun AppNavigation(
             val viewModel: CreateTagViewModel = hiltViewModel()
 
             CreateTagScreen(
+                onBackClick = { navController.navigateUp() },
+                viewModel = viewModel
+            )
+        }
+
+        composable<Screen.SettingsScreen>(
+            enterTransition = {
+                if (initialState.destination.hasRoute<Screen.MainScreen>()) slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                ) else EnterTransition.None
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
+        ) {
+            val viewModel: SettingsViewModel = hiltViewModel()
+
+            SettingsScreen(
                 onBackClick = { navController.navigateUp() },
                 viewModel = viewModel
             )

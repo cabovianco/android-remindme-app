@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -71,8 +72,6 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
-import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun ReminderFormScreen(
@@ -94,7 +93,7 @@ fun ReminderFormScreen(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(16.dp),
-                text = stringResource(R.string.common_btn_save),
+                text = stringResource(R.string.action_save),
                 onClick = onSaveClick,
                 enabled = uiState.isValid
             )
@@ -213,7 +212,7 @@ private fun TitleDescriptionSection(
             modifier = Modifier.fillMaxWidth(),
             value = title,
             onValueChange = onTitleChange,
-            label = stringResource(R.string.editor_title_hint),
+            label = stringResource(R.string.reminder_title_hint),
             singleLine = true
         )
 
@@ -221,7 +220,7 @@ private fun TitleDescriptionSection(
             modifier = Modifier.fillMaxWidth(),
             value = description ?: "",
             onValueChange = onDescriptionChange,
-            label = stringResource(R.string.editor_desc_hint),
+            label = stringResource(R.string.reminder_description_hint),
             maxLines = 5,
             minLines = 5
         )
@@ -290,8 +289,8 @@ private fun DateField(
 
     SelectionCard(
         modifier = modifier,
-        title = stringResource(R.string.editor_date_label),
-        value = date.format(DateTimeFormatter.ofPattern(stringResource(R.string.common_date_format))),
+        title = stringResource(R.string.reminder_date_label),
+        value = date.format(DateTimeFormatter.ofPattern(stringResource(R.string.date_format))),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_calendar),
@@ -351,7 +350,7 @@ private fun DatePickerBottomSheet(
         actions = {
             AppButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.common_btn_save),
+                text = stringResource(R.string.action_save),
                 onClick = { datePickerState.selectedDateMillis?.let { onConfirm(it) } }
             )
         }
@@ -369,7 +368,7 @@ private fun TimeField(
 
     SelectionCard(
         modifier = modifier,
-        title = stringResource(R.string.editor_time_label),
+        title = stringResource(R.string.reminder_time_label),
         value = LocalTime.of(hour, minute).format(DateTimeFormatter.ofPattern("HH:mm")),
         icon = {
             Icon(
@@ -421,7 +420,7 @@ private fun TimePickerBottomSheet(
         actions = {
             AppButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.common_btn_save),
+                text = stringResource(R.string.action_save),
                 onClick = { onConfirm(timePickerState.hour, timePickerState.minute) }
             )
         }
@@ -457,7 +456,7 @@ private fun RepeatSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 InputHeader(
-                    text = stringResource(R.string.editor_repeat_label),
+                    text = stringResource(R.string.reminder_repeat_label),
                     icon = {
                         Icon(
                             painter = painterResource(R.drawable.ic_repeat),
@@ -662,7 +661,7 @@ private fun PrioritySelectionSection(
 
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.editor_priority_label),
+        label = stringResource(R.string.reminder_priority_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_priority),
@@ -690,7 +689,7 @@ private fun TagSelectionSection(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.editor_tag_label),
+        label = stringResource(R.string.reminder_tags_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_tag),

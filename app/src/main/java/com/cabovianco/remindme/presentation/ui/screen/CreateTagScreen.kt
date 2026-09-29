@@ -57,7 +57,7 @@ fun CreateTagScreen(
         modifier = modifier,
         topBar = {
             NavigationTopBar(
-                title = stringResource(R.string.create_tag_title),
+                title = stringResource(R.string.tag_create_title),
                 onBackClick = onBackClick
             )
         },
@@ -67,7 +67,7 @@ fun CreateTagScreen(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(16.dp),
-                text = stringResource(R.string.common_btn_save),
+                text = stringResource(R.string.action_save),
                 onClick = {
                     viewModel.onCreateTag()
                     onBackClick()
@@ -109,7 +109,7 @@ private fun CreateTagContent(
             modifier = Modifier.fillMaxWidth(),
             value = name,
             onValueChange = onNameChange,
-            label = stringResource(R.string.create_tag_name_hint),
+            label = stringResource(R.string.tag_name_hint),
             singleLine = true
         )
 
@@ -135,7 +135,7 @@ private fun TagIconSelector(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.create_tag_icon_label),
+        label = stringResource(R.string.tag_icon_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_tag_icon),
@@ -166,7 +166,7 @@ private fun TagColorSelector(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.create_tag_color_label),
+        label = stringResource(R.string.tag_color_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_tag_color),

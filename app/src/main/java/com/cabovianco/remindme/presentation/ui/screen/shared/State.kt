@@ -44,7 +44,7 @@ fun ErrorState(modifier: Modifier = Modifier) {
         modifier = modifier,
         title = {
             Text(
-                text = stringResource(R.string.main_error_state_title),
+                text = stringResource(R.string.error_state_title),
                 color = MaterialTheme.colorScheme.error,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
@@ -54,7 +54,7 @@ fun ErrorState(modifier: Modifier = Modifier) {
         description = {
             Text(
                 modifier = Modifier.alpha(0.7f),
-                text = stringResource(R.string.main_error_state_description),
+                text = stringResource(R.string.error_state_description),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -78,7 +78,7 @@ fun EmptyState(modifier: Modifier = Modifier) {
         modifier = modifier,
         title = {
             Text(
-                text = stringResource(R.string.main_empty_state_title),
+                text = stringResource(R.string.empty_state_title),
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineSmall
@@ -92,7 +92,7 @@ fun EmptyState(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EmptyStateDescription() {
-    val description = stringResource(R.string.main_empty_state_description)
+    val description = stringResource(R.string.empty_state_description)
     val color = LocalContentColor.current.copy(alpha = 0.7f)
 
     val parts = description.split($$"%1$s", limit = 2)

@@ -33,7 +33,7 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(24.dp),
-                text = stringResource(R.string.welcome_btn_start),
+                text = stringResource(R.string.welcome_action_get_started),
                 onClick = onGetStartedClick
             )
         }
@@ -59,7 +59,7 @@ private fun WelcomeContent(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = stringResource(R.string.welcome_app_description),
+            text = stringResource(R.string.welcome_description),
             style = MaterialTheme.typography.bodyLarge
         )
     }

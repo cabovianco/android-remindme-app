@@ -87,6 +87,7 @@ fun MainScreen(
     onAddReminder: () -> Unit,
     onEditReminder: (Long) -> Unit,
     onCreateTag: () -> Unit,
+    onSettingsClick: () -> Unit,
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -123,6 +124,7 @@ fun MainScreen(
             selectedTags = uiState.selectedTags,
             selectedPriority = uiState.selectedPriority,
             onFilterClick = { showFilterSheet = true },
+            onSettingsClick = onSettingsClick,
             onEditReminder = onEditReminder,
             onDeleteReminder = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -152,8 +154,8 @@ fun MainScreen(
 
     tagToDelete?.let { tag ->
         DeleteConfirmationBottomSheet(
-            title = stringResource(R.string.main_delete_tag_title),
-            message = stringResource(R.string.main_delete_tag_message, tag.name),
+            title = stringResource(R.string.tag_delete_title),
+            message = stringResource(R.string.tag_delete_message, tag.name),
             onDismiss = { tagToDelete = null },
             onConfirm = {
                 viewModel.deleteTag(tag)
@@ -164,8 +166,8 @@ fun MainScreen(
 
     reminderToDelete?.let { reminder ->
         DeleteConfirmationBottomSheet(
-            title = stringResource(R.string.main_delete_reminder_title),
-            message = stringResource(R.string.main_delete_reminder_message, reminder.title),
+            title = stringResource(R.string.reminder_delete_title),
+            message = stringResource(R.string.reminder_delete_message, reminder.title),
             onDismiss = { reminderToDelete = null },
             onConfirm = {
                 viewModel.deleteReminder(reminder)
@@ -236,6 +238,7 @@ private fun MainContent(
     selectedTags: Set<Tag>,
     selectedPriority: ReminderPriority?,
     onFilterClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onEditReminder: (Long) -> Unit,
     onDeleteReminder: (Reminder) -> Unit,
     uiState: MainState,
@@ -257,7 +260,8 @@ private fun MainContent(
         FilterHeader(
             modifier = Modifier.fillMaxWidth(),
             activeFiltersCount = selectedTags.size + (if (selectedPriority != null) 1 else 0),
-            onFilterClick = onFilterClick
+            onFilterClick = onFilterClick,
+            onSettingsClick = onSettingsClick
         )
 
         MainStateContent(
@@ -273,15 +277,21 @@ private fun MainContent(
 private fun FilterHeader(
     activeFiltersCount: Int,
     onFilterClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    Row(
         modifier = modifier.padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         FilterButton(
             activeFiltersCount = activeFiltersCount,
             onClick = onFilterClick
+        )
+
+        SettingsButton(
+            onClick = onSettingsClick
         )
     }
 }
@@ -458,6 +468,23 @@ private fun FilterButton(
     }
 }
 
+@Composable
+private fun SettingsButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppIconButton(
+        modifier = modifier,
+        onClick = onClick,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_settings),
+                contentDescription = null
+            )
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterBottomSheet(
@@ -548,7 +575,7 @@ private fun PriorityFilterSection(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.editor_priority_label),
+        label = stringResource(R.string.reminder_priority_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_priority),
@@ -577,7 +604,7 @@ private fun TagFilterSection(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.editor_tag_label),
+        label = stringResource(R.string.reminder_tags_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_tag),
@@ -611,14 +638,14 @@ private fun FilterBottomSheetActions(
     ) {
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.common_filter_apply),
+            text = stringResource(R.string.filter_action_apply),
             onClick = onApply,
             variant = ButtonVariant.Primary
         )
 
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.common_filter_clear),
+            text = stringResource(R.string.filter_action_clear),
             onClick = onClear,
             variant = ButtonVariant.Secondary
         )
@@ -678,14 +705,14 @@ private fun DeleteConfirmationActions(
     ) {
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.common_btn_delete),
+            text = stringResource(R.string.action_delete),
             onClick = onConfirm,
             variant = ButtonVariant.Danger
         )
 
         AppButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(android.R.string.cancel),
+            text = stringResource(R.string.action_cancel),
             onClick = onDismiss,
             variant = ButtonVariant.Secondary
         )
@@ -973,10 +1000,10 @@ private fun ReminderTagsInfo(
 @Composable
 private fun ReminderRepeat.toShortString(): String = when (this) {
     ReminderRepeat.Never -> ""
-    is ReminderRepeat.Daily -> stringResource(R.string.repeat_short_daily)
+    is ReminderRepeat.Daily -> stringResource(R.string.repeat_daily)
     is ReminderRepeat.Weekly -> {
-        if (days.isEmpty()) stringResource(R.string.repeat_short_weekly)
-        else if (days.size == 7) stringResource(R.string.repeat_short_daily)
+        if (days.isEmpty()) stringResource(R.string.repeat_weekly)
+        else if (days.size == 7) stringResource(R.string.repeat_daily)
         else if (days.size > 2) {
             "${days.size} ${stringResource(R.string.repeat_option_day).lowercase()}s"
         } else {
@@ -986,6 +1013,6 @@ private fun ReminderRepeat.toShortString(): String = when (this) {
         }
     }
 
-    is ReminderRepeat.Monthly -> stringResource(R.string.repeat_short_monthly)
-    is ReminderRepeat.Yearly -> stringResource(R.string.repeat_short_yearly)
+    is ReminderRepeat.Monthly -> stringResource(R.string.repeat_monthly)
+    is ReminderRepeat.Yearly -> stringResource(R.string.repeat_yearly)
 }
