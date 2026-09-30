@@ -72,6 +72,11 @@
     <string name="settings_export_description">Guarda tus datos en un archivo.</string>
     <string name="settings_import_title">Importar</string>
     <string name="settings_import_description">Restaura tus datos desde un archivo.</string>
+    <string name="settings_section_about">Acerca de</string>
+    <string name="settings_privacy_policy_title">Política de Privacidad</string>
+    <string name="settings_github_title">GitHub</string>
+    <string name="settings_kofi_title">Apoyar el Proyecto</string>
+    <string name="settings_footer_made_by">Made by Thomas Cabovianco</string>
 
 
     <string name="date_format">dd/MM/yyyy</string>

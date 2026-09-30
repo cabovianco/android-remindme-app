@@ -73,6 +73,11 @@
     <string name="settings_export_description">Save your data to a file.</string>
     <string name="settings_import_title">Import</string>
     <string name="settings_import_description">Restore your data from a file.</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_privacy_policy_title">Privacy Policy</string>
+    <string name="settings_github_title">GitHub</string>
+    <string name="settings_kofi_title">Help the Project</string>
+    <string name="settings_footer_made_by">Made by Thomas Cabovianco</string>
 
 
     <string name="date_format">MM/dd/yyyy</string>
