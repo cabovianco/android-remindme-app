@@ -31,15 +31,16 @@
     <string name="reminder_tags_label">Tags</string>
 
     <string name="reminder_delete_title">Delete Reminder</string>
-    <string name="reminder_delete_message">Are you sure you want to delete \"%1$s\"? All future occurrences will be removed.</string>
+    <string name="reminder_delete_description">Are you sure you want to delete \"%1$s\"? All future occurrences will be removed.</string>
 
 
     <string name="tag_create_title">Create Tag</string>
     <string name="tag_name_hint">Name</string>
     <string name="tag_icon_label">Icon</string>
     <string name="tag_color_label">Color</string>
+
     <string name="tag_delete_title">Delete Tag</string>
-    <string name="tag_delete_message">Are you sure you want to delete \"%1$s\"?</string>
+    <string name="tag_delete_description">Are you sure you want to delete \"%1$s\"?</string>
 
 
     <string name="repeat_every_label">Every</string>
@@ -60,7 +61,6 @@
 
     <string name="filter_label">Filter</string>
     <string name="filter_action_apply">Apply</string>
-    <string name="filter_action_clear">Clear</string>
 
 
     <string name="notification_snooze_15_minutes">Snooze 15 min</string>
@@ -70,14 +70,13 @@
     <string name="settings_title">Settings</string>
     <string name="settings_section_data_backup">Data &amp; Backup</string>
     <string name="settings_export_title">Export</string>
-    <string name="settings_export_description">Save a backup of your data to a file.</string>
+    <string name="settings_export_description">Save your data to a file.</string>
     <string name="settings_import_title">Import</string>
-    <string name="settings_import_description">Restore your data from a backup file.</string>
+    <string name="settings_import_description">Restore your data from a file.</string>
 
 
     <string name="date_format">MM/dd/yyyy</string>
     <string name="action_save">Save</string>
     <string name="action_delete">Delete</string>
-    <string name="action_cancel">Cancel</string>
 
 </resources>
