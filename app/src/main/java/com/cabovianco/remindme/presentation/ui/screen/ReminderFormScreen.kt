@@ -304,7 +304,6 @@ private fun DateField(
     if (showDialog) {
         DatePickerBottomSheet(
             selectedDateMillis = selectedDateMillis,
-            onDismiss = { showDialog = false },
             onConfirm = {
                 onDateChange(it)
                 showDialog = false
@@ -317,7 +316,6 @@ private fun DateField(
 @Composable
 private fun DatePickerBottomSheet(
     selectedDateMillis: Long,
-    onDismiss: () -> Unit,
     onConfirm: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -335,7 +333,7 @@ private fun DatePickerBottomSheet(
 
     AppBottomSheet(
         modifier = modifier,
-        onDismiss = onDismiss,
+        onDismiss = { datePickerState.selectedDateMillis?.let { onConfirm(it) } },
         content = {
             DatePicker(
                 state = datePickerState,
@@ -345,13 +343,6 @@ private fun DatePickerBottomSheet(
                 title = null,
                 headline = null,
                 showModeToggle = false
-            )
-        },
-        actions = {
-            AppButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.action_save),
-                onClick = { datePickerState.selectedDateMillis?.let { onConfirm(it) } }
             )
         }
     )
@@ -384,9 +375,8 @@ private fun TimeField(
         TimePickerBottomSheet(
             hour = hour,
             minute = minute,
-            onDismiss = { showDialog = false },
-            onConfirm = { h, m ->
-                onTimeChange(h, m)
+            onConfirm = { hour, minute ->
+                onTimeChange(hour, minute)
                 showDialog = false
             }
         )
@@ -398,7 +388,6 @@ private fun TimeField(
 private fun TimePickerBottomSheet(
     hour: Int,
     minute: Int,
-    onDismiss: () -> Unit,
     onConfirm: (Int, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -410,18 +399,11 @@ private fun TimePickerBottomSheet(
 
     AppBottomSheet(
         modifier = modifier,
-        onDismiss = onDismiss,
+        onDismiss = { onConfirm(timePickerState.hour, timePickerState.minute) },
         content = {
             TimePicker(
                 modifier = Modifier.fillMaxWidth(),
                 state = timePickerState
-            )
-        },
-        actions = {
-            AppButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.action_save),
-                onClick = { onConfirm(timePickerState.hour, timePickerState.minute) }
             )
         }
     )
