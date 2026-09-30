@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cabovianco.remindme.R
+import com.cabovianco.remindme.presentation.ui.screen.shared.DashedDivider
 import com.cabovianco.remindme.presentation.ui.screen.shared.NavigationTopBar
 import com.cabovianco.remindme.presentation.viewmodel.SettingsViewModel
 import java.time.LocalDate
@@ -104,9 +104,10 @@ private fun SettingsContent(
                 onClick = onExportClick
             )
 
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            DashedDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
 
             SettingsItem(
@@ -134,7 +135,7 @@ private fun SettingsGroup(
             Text(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 text = it,
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -192,7 +193,7 @@ private fun SettingsItem(
                     modifier = Modifier.size(24.dp),
                     painter = it,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -203,14 +204,14 @@ private fun SettingsItem(
         ) {
             Text(
                 text = title,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.titleMedium
             )
 
             description?.let {
                 Text(
                     text = it,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
