@@ -146,6 +146,7 @@ fun MainScreen(
             },
             onTagLongClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                showFilterSheet = false
                 tagToDelete = it
             },
             onAddTagClick = onCreateTag
@@ -155,7 +156,7 @@ fun MainScreen(
     tagToDelete?.let { tag ->
         DeleteConfirmationBottomSheet(
             title = stringResource(R.string.tag_delete_title),
-            message = stringResource(R.string.tag_delete_message, tag.name),
+            message = stringResource(R.string.tag_delete_description, tag.name),
             onDismiss = { tagToDelete = null },
             onConfirm = {
                 viewModel.deleteTag(tag)
@@ -167,7 +168,7 @@ fun MainScreen(
     reminderToDelete?.let { reminder ->
         DeleteConfirmationBottomSheet(
             title = stringResource(R.string.reminder_delete_title),
-            message = stringResource(R.string.reminder_delete_message, reminder.title),
+            message = stringResource(R.string.reminder_delete_description, reminder.title),
             onDismiss = { reminderToDelete = null },
             onConfirm = {
                 viewModel.deleteReminder(reminder)
@@ -257,7 +258,7 @@ private fun MainContent(
             isLoading = uiState is MainState.Loading
         )
 
-        FilterHeader(
+        Header(
             modifier = Modifier.fillMaxWidth(),
             activeFiltersCount = selectedTags.size + (if (selectedPriority != null) 1 else 0),
             onFilterClick = onFilterClick,
@@ -274,7 +275,7 @@ private fun MainContent(
 }
 
 @Composable
-private fun FilterHeader(
+private fun Header(
     activeFiltersCount: Int,
     onFilterClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -282,7 +283,7 @@ private fun FilterHeader(
 ) {
     Row(
         modifier = modifier.padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
         verticalAlignment = Alignment.CenterVertically
     ) {
         FilterButton(
@@ -526,11 +527,8 @@ private fun FilterBottomSheet(
                     val validTags = localSelectedTags.filter { localTag ->
                         tags.any { it.id == localTag.id }
                     }.toSet()
+
                     onApply(validTags, localSelectedPriority)
-                },
-                onClear = {
-                    localSelectedTags = emptySet()
-                    localSelectedPriority = null
                 }
             )
         }
@@ -629,7 +627,6 @@ private fun TagFilterSection(
 @Composable
 private fun FilterBottomSheetActions(
     onApply: () -> Unit,
-    onClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -641,13 +638,6 @@ private fun FilterBottomSheetActions(
             text = stringResource(R.string.filter_action_apply),
             onClick = onApply,
             variant = ButtonVariant.Primary
-        )
-
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.filter_action_clear),
-            onClick = onClear,
-            variant = ButtonVariant.Secondary
         )
     }
 }
@@ -684,39 +674,14 @@ private fun DeleteConfirmationBottomSheet(
             )
         },
         actions = {
-            DeleteConfirmationActions(
+            AppButton(
                 modifier = Modifier.fillMaxWidth(),
-                onConfirm = onConfirm,
-                onDismiss = onDismiss
+                text = stringResource(R.string.action_delete),
+                onClick = onConfirm,
+                variant = ButtonVariant.Danger
             )
         }
     )
-}
-
-@Composable
-private fun DeleteConfirmationActions(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.action_delete),
-            onClick = onConfirm,
-            variant = ButtonVariant.Danger
-        )
-
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.action_cancel),
-            onClick = onDismiss,
-            variant = ButtonVariant.Secondary
-        )
-    }
 }
 
 @Composable
