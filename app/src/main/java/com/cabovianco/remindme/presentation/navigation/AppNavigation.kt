@@ -3,6 +3,8 @@ package com.cabovianco.remindme.presentation.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -21,12 +23,14 @@ import com.cabovianco.remindme.presentation.ui.screen.CreateTagScreen
 import com.cabovianco.remindme.presentation.ui.screen.EditReminderScreen
 import com.cabovianco.remindme.presentation.ui.screen.MainScreen
 import com.cabovianco.remindme.presentation.ui.screen.PermissionScreen
+import com.cabovianco.remindme.presentation.ui.screen.SettingsScreen
 import com.cabovianco.remindme.presentation.ui.screen.WelcomeScreen
 import com.cabovianco.remindme.presentation.viewmodel.AddReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.AppViewModel
 import com.cabovianco.remindme.presentation.viewmodel.CreateTagViewModel
 import com.cabovianco.remindme.presentation.viewmodel.EditReminderViewModel
 import com.cabovianco.remindme.presentation.viewmodel.MainViewModel
+import com.cabovianco.remindme.presentation.viewmodel.SettingsViewModel
 
 @Composable
 fun AppNavigation(
@@ -46,11 +50,13 @@ fun AppNavigation(
     }
 
     NavHost(
-        modifier = modifier,
+        modifier = modifier.background(MaterialTheme.colorScheme.background),
         navController = navController,
         startDestination = startDestination,
         enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None }
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
         composable<Screen.WelcomeScreen> {
             WelcomeScreen(
@@ -71,7 +77,9 @@ fun AppNavigation(
             exitTransition = {
                 if (targetState.destination.hasRoute<Screen.MainScreen>()) ExitTransition.None else
                     slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }
+            },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
         ) {
             PermissionScreen(
                 onAccept = {
@@ -88,7 +96,9 @@ fun AppNavigation(
                     AnimatedContentTransitionScope.SlideDirection.Left
                 ) else EnterTransition.None
             },
-            exitTransition = { ExitTransition.KeepUntilTransitionsFinished }
+            exitTransition = { ExitTransition.KeepUntilTransitionsFinished },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.KeepUntilTransitionsFinished }
         ) {
             val viewModel = hiltViewModel<MainViewModel>()
 
@@ -96,6 +106,7 @@ fun AppNavigation(
                 onAddReminder = { navController.navigate(Screen.AddReminderScreen) },
                 onEditReminder = { navController.navigate(Screen.EditReminderScreen(it)) },
                 onCreateTag = { navController.navigate(Screen.CreateTagScreen) },
+                onSettingsClick = { navController.navigate(Screen.SettingsScreen) },
                 viewModel = viewModel
             )
         }
@@ -109,7 +120,9 @@ fun AppNavigation(
             exitTransition = {
                 if (targetState.destination.hasRoute<Screen.CreateTagScreen>()) ExitTransition.KeepUntilTransitionsFinished else
                     slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }
+            },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
         ) {
             val viewModel: AddReminderViewModel = hiltViewModel()
 
@@ -129,7 +142,9 @@ fun AppNavigation(
             exitTransition = {
                 if (targetState.destination.hasRoute<Screen.CreateTagScreen>()) ExitTransition.KeepUntilTransitionsFinished else
                     slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }
+            },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
         ) { backStackEntry ->
             val route = backStackEntry.toRoute<Screen.EditReminderScreen>()
             val viewModel: EditReminderViewModel = hiltViewModel()
@@ -153,11 +168,33 @@ fun AppNavigation(
             },
             exitTransition = {
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-            }
+            },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
         ) {
             val viewModel: CreateTagViewModel = hiltViewModel()
 
             CreateTagScreen(
+                onBackClick = { navController.navigateUp() },
+                viewModel = viewModel
+            )
+        }
+
+        composable<Screen.SettingsScreen>(
+            enterTransition = {
+                if (initialState.destination.hasRoute<Screen.MainScreen>()) slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                ) else EnterTransition.None
+            },
+            exitTransition = {
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right) }
+        ) {
+            val viewModel: SettingsViewModel = hiltViewModel()
+
+            SettingsScreen(
                 onBackClick = { navController.navigateUp() },
                 viewModel = viewModel
             )

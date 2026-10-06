@@ -1,64 +1,98 @@
 <resources>
-    <string name="common_app_name">RemindMe</string>
 
-    <string name="welcome_app_description">Your reminders, private and offline.</string>
-    <string name="welcome_btn_start">Get Started</string>
+    <string name="app_name">RemindMe</string>
 
-    <string name="permissions_notif_title">Stay Notified</string>
-    <string name="permissions_notif_desc">Enable notifications to never miss an important task.</string>
-    <string name="permissions_alarm_title">Exact Reminders</string>
-    <string name="permissions_alarm_desc">Enable exact alarms to ensure your reminders trigger at the precise time, even when the device is idle.</string>
-    <string name="permissions_btn_continue">Continue</string>
 
-    <string name="main_empty_state_title">Oops..There are no reminders</string>
-    <string name="main_empty_state_description">Tap %1$s to add one.</string>
+    <string name="welcome_description">Your reminders, private and offline.</string>
+    <string name="welcome_action_get_started">Get Started</string>
 
-    <string name="main_error_state_title">An error has occurred</string>
-    <string name="main_error_state_description">Please try again later.</string>
 
-    <string name="editor_title_add">Create Reminder</string>
-    <string name="editor_title_edit">Edit Reminder</string>
-    <string name="editor_title_hint">Title</string>
-    <string name="editor_desc_hint">Description</string>
-    <string name="editor_date_label">Date</string>
-    <string name="editor_time_label">Time</string>
-    <string name="editor_repeat_label">Repeat</string>
+    <string name="permission_notification_title">Stay Notified</string>
+    <string name="permission_notification_description">Enable notifications to never miss an important task.</string>
+    <string name="permission_alarm_title">Exact Reminders</string>
+    <string name="permission_alarm_description">Enable exact alarms to ensure your reminders trigger at the precise time, even when the device is idle.</string>
+    <string name="permission_action_continue">Continue</string>
+
+
+    <string name="empty_state_title">Oops… No reminders yet</string>
+    <string name="empty_state_description">Tap %1$s to add one.</string>
+    <string name="error_state_title">An error has occurred</string>
+    <string name="error_state_description">Please try again later.</string>
+
+
+    <string name="reminder_create_title">Create Reminder</string>
+    <string name="reminder_edit_title">Edit Reminder</string>
+    <string name="reminder_title_hint">Title</string>
+    <string name="reminder_description_hint">Description</string>
+    <string name="reminder_date_label">Date</string>
+    <string name="reminder_time_label">Time</string>
+    <string name="reminder_repeat_label">Repeat</string>
+    <string name="reminder_priority_label">Priority</string>
+    <string name="reminder_tags_label">Tags</string>
+
+    <string name="reminder_delete_title">Delete Reminder</string>
+    <string name="reminder_delete_description">Are you sure you want to delete \"%1$s\"?\nAll future occurrences will be removed.</string>
+
+
+    <string name="tag_create_title">Create Tag</string>
+    <string name="tag_name_hint">Name</string>
+    <string name="tag_icon_label">Icon</string>
+    <string name="tag_color_label">Color</string>
+
+    <string name="tag_delete_title">Delete Tag</string>
+    <string name="tag_delete_description">Are you sure you want to delete \"%1$s\"?</string>
+
+
     <string name="repeat_every_label">Every</string>
     <string name="repeat_option_day">Day</string>
     <string name="repeat_option_week">Week</string>
     <string name="repeat_option_month">Month</string>
     <string name="repeat_option_year">Year</string>
-    <string name="editor_tag_label">Tags</string>
-    <string name="editor_priority_label">Priority</string>
+    <string name="repeat_daily">Daily</string>
+    <string name="repeat_weekly">Weekly</string>
+    <string name="repeat_monthly">Monthly</string>
+    <string name="repeat_yearly">Yearly</string>
+
+
     <string name="priority_low">Low</string>
     <string name="priority_medium">Medium</string>
     <string name="priority_high">High</string>
-    <string name="common_filter_label">Filter</string>
-    <string name="common_filter_apply">Apply</string>
-    <string name="common_filter_clear">Clear</string>
 
-    <string name="tag_all">All</string>
 
-    <string name="common_date_format">MM/dd/yyyy</string>
-    <string name="common_error_generic">Something went wrong. Please try again.</string>
-    <string name="common_btn_save">Save</string>
+    <string name="notification_snooze_15_minutes">Snooze 15 min</string>
+    <string name="notification_snooze_1_hour">Snooze 1 hour</string>
 
-    <string name="create_tag_title">Create Tag</string>
-    <string name="create_tag_name_hint">Name</string>
-    <string name="create_tag_icon_label">Icon</string>
-    <string name="create_tag_color_label">Color</string>
 
-    <string name="common_btn_delete">Delete</string>
-    <string name="main_delete_tag_title">Delete Tag</string>
-    <string name="main_delete_tag_message">Are you sure you want to delete \"%1$s\"?</string>
-    <string name="main_delete_reminder_title">Delete Reminder</string>
-    <string name="main_delete_reminder_message">Are you sure you want to delete \"%1$s\"? All future occurrences will be removed.</string>
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_data_backup">Data &amp; Backup</string>
+    <string name="settings_export_title">Export</string>
+    <string name="settings_export_description">Save your data to a file.</string>
+    <string name="settings_import_title">Import</string>
+    <string name="settings_import_description">Restore your data from a file.</string>
 
-    <string name="snooze_15_min">Snooze 15 min</string>
-    <string name="snooze_1_hour">Snooze 1 hour</string>
+    <string name="settings_section_history">History</string>
+    <string name="settings_history_title">History</string>
+    <string name="settings_history_description">Save the history of your past reminders.</string>
+    <string name="settings_history_retention_title">Keep for</string>
+    <string name="settings_history_retention_3_days">3 days</string>
+    <string name="settings_history_retention_7_days">7 days</string>
+    <string name="settings_history_retention_30_days">30 days</string>
 
-    <string name="repeat_short_daily">Daily</string>
-    <string name="repeat_short_weekly">Weekly</string>
-    <string name="repeat_short_monthly">Monthly</string>
-    <string name="repeat_short_yearly">Yearly</string>
+    <string name="history_delete_title">Delete from History</string>
+    <string name="history_delete_description">Are you sure you want to delete \"%1$s\"?</string>
+
+    <string name="settings_section_about">About</string>
+    <string name="settings_privacy_policy_title">Privacy Policy</string>
+    <string name="settings_github_title">GitHub</string>
+    <string name="settings_kofi_title">Help the Project</string>
+    <string name="settings_footer_made_by">Made by Thomas Cabovianco</string>
+
+
+    <string name="date_format">MM/dd/yyyy</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_clear">Clear</string>
+
 </resources>

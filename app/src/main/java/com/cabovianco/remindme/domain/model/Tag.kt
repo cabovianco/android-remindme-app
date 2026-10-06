@@ -1,7 +1,9 @@
 package com.cabovianco.remindme.domain.model
 
 import com.cabovianco.remindme.data.local.entity.TagEntity
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Tag(
     val id: Long = 0,
     val name: String,

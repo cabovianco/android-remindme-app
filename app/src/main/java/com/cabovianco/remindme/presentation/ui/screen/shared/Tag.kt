@@ -71,8 +71,8 @@ fun TagChip(
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             icon?.let {
                 Icon(
@@ -85,8 +85,8 @@ fun TagChip(
 
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
@@ -110,8 +110,8 @@ fun CompactTagChip(
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             icon?.let {
                 Icon(
@@ -123,12 +123,12 @@ fun CompactTagChip(
             }
 
             Text(
+                modifier = Modifier.widthIn(max = 100.dp),
                 text = text,
-                style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
-                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.widthIn(max = 100.dp)
+                maxLines = 1,
+                style = MaterialTheme.typography.labelSmall
             )
         }
     }

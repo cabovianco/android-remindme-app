@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.cabovianco.remindme.MainActivity
 import com.cabovianco.remindme.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -35,12 +36,16 @@ class NotificationHelper @Inject constructor(
     }
 
     fun showNotification(id: Long, title: String, message: String?) {
-        val snooze15Intent = Intent(context, NotificationReceiver::class.java).apply {
-            action = NotificationReceiver.ACTION_SNOOZE_15
-            putExtra("id", id)
-            putExtra("title", title)
-            putExtra("description", message)
-        }
+        val intent = Intent(context, MainActivity::class.java)
+            .apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+
+        val snooze15Intent = Intent(context, NotificationReceiver::class.java)
+            .apply {
+                action = NotificationReceiver.ACTION_SNOOZE_15
+                putExtra("id", id)
+            }
 
         val snooze15PendingIntent = PendingIntent.getBroadcast(
             context,
@@ -49,17 +54,23 @@ class NotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val snooze60Intent = Intent(context, NotificationReceiver::class.java).apply {
-            action = NotificationReceiver.ACTION_SNOOZE_60
-            putExtra("id", id)
-            putExtra("title", title)
-            putExtra("description", message)
-        }
+        val snooze60Intent = Intent(context, NotificationReceiver::class.java)
+            .apply {
+                action = NotificationReceiver.ACTION_SNOOZE_60
+                putExtra("id", id)
+            }
 
         val snooze60PendingIntent = PendingIntent.getBroadcast(
             context,
             id.toInt() * 10 + 2,
             snooze60Intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val contentPendingIntent = PendingIntent.getActivity(
+            context,
+            id.toInt() * 10 + 3,
+            intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
@@ -70,19 +81,22 @@ class NotificationHelper @Inject constructor(
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setContentIntent(contentPendingIntent)
+            .setAutoCancel(true)
             .addAction(
                 0,
-                context.getString(R.string.snooze_15_min),
+                context.getString(R.string.notification_snooze_15_minutes),
                 snooze15PendingIntent
             )
             .addAction(
                 0,
-                context.getString(R.string.snooze_1_hour),
+                context.getString(R.string.notification_snooze_1_hour),
                 snooze60PendingIntent
             )
 
-        if (message != null) {
+        if (!message.isNullOrBlank()) {
             notification.setContentText(message)
+            notification.setStyle(NotificationCompat.BigTextStyle().bigText(message))
         }
 
         notificationManager.notify(id.toInt(), notification.build())

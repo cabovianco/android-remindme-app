@@ -41,9 +41,9 @@ fun AppTextField(
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            errorContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             focusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
             unfocusedBorderColor = Color.Transparent,
-            errorContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
             unfocusedLabelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
         )

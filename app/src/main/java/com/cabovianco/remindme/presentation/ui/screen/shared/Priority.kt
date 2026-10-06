@@ -60,8 +60,8 @@ fun PriorityChip(
         ) {
             Text(
                 text = stringResource(priority.toResId()),
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

@@ -12,17 +12,17 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DashedDivider(
     modifier: Modifier = Modifier,
-    thickness: Float = 1.5f
+    thickness: Float = 1.5f,
 ) {
     val color = MaterialTheme.colorScheme.inversePrimary
 
     Canvas(modifier = modifier.height(thickness.dp)) {
         drawLine(
             color = color,
-            start = Offset(0f, 0f),
-            end = Offset(size.width, 0f),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f),
-            strokeWidth = thickness
+            start = Offset(0f, size.height / 2f),
+            end = Offset(size.width, size.height / 2f),
+            strokeWidth = thickness,
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
         )
     }
 }

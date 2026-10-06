@@ -1,13 +1,11 @@
 package com.cabovianco.remindme.presentation.ui.screen
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
@@ -27,7 +27,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,6 +34,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,10 +57,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cabovianco.remindme.R
 import com.cabovianco.remindme.domain.model.Reminder
+import com.cabovianco.remindme.domain.model.ReminderHistoryEntry
 import com.cabovianco.remindme.domain.model.ReminderPriority
 import com.cabovianco.remindme.domain.model.ReminderRepeat
 import com.cabovianco.remindme.domain.model.Tag
 import com.cabovianco.remindme.presentation.state.MainState
+import com.cabovianco.remindme.presentation.state.ReminderItem
 import com.cabovianco.remindme.presentation.ui.screen.shared.AppBottomSheet
 import com.cabovianco.remindme.presentation.ui.screen.shared.AppButton
 import com.cabovianco.remindme.presentation.ui.screen.shared.AppIconButton
@@ -87,6 +90,7 @@ fun MainScreen(
     onAddReminder: () -> Unit,
     onEditReminder: (Long) -> Unit,
     onCreateTag: () -> Unit,
+    onSettingsClick: () -> Unit,
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -98,6 +102,7 @@ fun MainScreen(
     var showFilterSheet by remember { mutableStateOf(value = false) }
     var tagToDelete by remember { mutableStateOf<Tag?>(null) }
     var reminderToDelete by remember { mutableStateOf<Reminder?>(null) }
+    var historyEntryToDelete by remember { mutableStateOf<ReminderHistoryEntry?>(null) }
 
     Scaffold(
         modifier = modifier,
@@ -105,8 +110,9 @@ fun MainScreen(
             TopBar(
                 month = selectedDate.month,
                 year = selectedDate.year,
-                onPreviousRange = { viewModel.moveDateRangeBack() },
-                onNextRange = { viewModel.moveDateRangeForward() }
+                activeFiltersCount = uiState.selectedTags.size + (if (uiState.selectedPriority != null) 1 else 0),
+                onFilterClick = { showFilterSheet = true },
+                onSettingsClick = onSettingsClick
             )
         },
         floatingActionButton = {
@@ -119,14 +125,16 @@ fun MainScreen(
                 .padding(padding),
             selectedDate = selectedDate,
             onSelectedDateChange = { viewModel.onSelectedDateChange(it) },
-            selectableDates = uiState.selectableDates,
-            selectedTags = uiState.selectedTags,
-            selectedPriority = uiState.selectedPriority,
-            onFilterClick = { showFilterSheet = true },
+            getWeekDatesForPage = { viewModel.getWeekDatesForPage(it) },
+            getWeekPageIndex = { viewModel.getWeekPageIndex(it) },
             onEditReminder = onEditReminder,
             onDeleteReminder = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 reminderToDelete = it
+            },
+            onDeleteHistoryEntry = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                historyEntryToDelete = it
             },
             uiState = uiState.mainState
         )
@@ -144,6 +152,7 @@ fun MainScreen(
             },
             onTagLongClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                showFilterSheet = false
                 tagToDelete = it
             },
             onAddTagClick = onCreateTag
@@ -152,8 +161,8 @@ fun MainScreen(
 
     tagToDelete?.let { tag ->
         DeleteConfirmationBottomSheet(
-            title = stringResource(R.string.main_delete_tag_title),
-            message = stringResource(R.string.main_delete_tag_message, tag.name),
+            title = stringResource(R.string.tag_delete_title),
+            message = stringResource(R.string.tag_delete_description, tag.name),
             onDismiss = { tagToDelete = null },
             onConfirm = {
                 viewModel.deleteTag(tag)
@@ -164,12 +173,24 @@ fun MainScreen(
 
     reminderToDelete?.let { reminder ->
         DeleteConfirmationBottomSheet(
-            title = stringResource(R.string.main_delete_reminder_title),
-            message = stringResource(R.string.main_delete_reminder_message, reminder.title),
+            title = stringResource(R.string.reminder_delete_title),
+            message = stringResource(R.string.reminder_delete_description, reminder.title),
             onDismiss = { reminderToDelete = null },
             onConfirm = {
                 viewModel.deleteReminder(reminder)
                 reminderToDelete = null
+            }
+        )
+    }
+
+    historyEntryToDelete?.let { entry ->
+        DeleteConfirmationBottomSheet(
+            title = stringResource(R.string.history_delete_title),
+            message = stringResource(R.string.history_delete_description, entry.title),
+            onDismiss = { historyEntryToDelete = null },
+            onConfirm = {
+                viewModel.deleteHistoryEntry(entry)
+                historyEntryToDelete = null
             }
         )
     }
@@ -180,8 +201,9 @@ fun MainScreen(
 private fun TopBar(
     month: Month,
     year: Int,
-    onPreviousRange: () -> Unit,
-    onNextRange: () -> Unit,
+    activeFiltersCount: Int,
+    onFilterClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
@@ -189,25 +211,21 @@ private fun TopBar(
         title = {
             Text(
                 text = "${
-                    month.getDisplayName(TextStyle.FULL, Locale.getDefault()).capitalizeFirst()
+                    month.getDisplayName(TextStyle.FULL, LocalLocale.current.platformLocale)
+                        .capitalizeFirst()
                 }, $year",
                 style = MaterialTheme.typography.headlineMedium
             )
         },
         actions = {
-            IconButton(onClick = onPreviousRange) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
-                    contentDescription = null
-                )
-            }
+            FilterButton(
+                activeFiltersCount = activeFiltersCount,
+                onClick = onFilterClick
+            )
 
-            IconButton(onClick = onNextRange) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_forward),
-                    contentDescription = null
-                )
-            }
+            SettingsButton(
+                onClick = onSettingsClick
+            )
         }
     )
 }
@@ -232,56 +250,34 @@ private fun AddReminderFloatingButton(onClick: () -> Unit, modifier: Modifier = 
 private fun MainContent(
     selectedDate: ZonedDateTime,
     onSelectedDateChange: (ZonedDateTime) -> Unit,
-    selectableDates: List<ZonedDateTime>,
-    selectedTags: Set<Tag>,
-    selectedPriority: ReminderPriority?,
-    onFilterClick: () -> Unit,
+    getWeekDatesForPage: (Int) -> List<ZonedDateTime>,
+    getWeekPageIndex: (ZonedDateTime) -> Int,
     onEditReminder: (Long) -> Unit,
     onDeleteReminder: (Reminder) -> Unit,
+    onDeleteHistoryEntry: (ReminderHistoryEntry) -> Unit,
     uiState: MainState,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.padding(top = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DateRangePicker(
+            modifier = Modifier.fillMaxWidth(),
             selectedDate = selectedDate,
             onSelectedDate = onSelectedDateChange,
-            selectableDates = selectableDates,
-            isLoading = uiState is MainState.Loading,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        FilterHeader(
-            activeFiltersCount = selectedTags.size + (if (selectedPriority != null) 1 else 0),
-            onFilterClick = onFilterClick,
-            modifier = Modifier.fillMaxWidth()
+            getWeekDatesForPage = getWeekDatesForPage,
+            getWeekPageIndex = getWeekPageIndex,
+            isLoading = uiState is MainState.Loading
         )
 
         MainStateContent(
+            modifier = Modifier.fillMaxSize(),
             uiState = uiState,
             onEditReminder = onEditReminder,
             onDeleteReminder = onDeleteReminder,
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-}
-
-@Composable
-private fun FilterHeader(
-    activeFiltersCount: Int,
-    onFilterClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier.padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        FilterButton(
-            activeFiltersCount = activeFiltersCount,
-            onClick = onFilterClick
+            onDeleteHistoryEntry = onDeleteHistoryEntry
         )
     }
 }
@@ -291,16 +287,18 @@ private fun MainStateContent(
     uiState: MainState,
     onEditReminder: (Long) -> Unit,
     onDeleteReminder: (Reminder) -> Unit,
+    onDeleteHistoryEntry: (ReminderHistoryEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         when (uiState) {
             is MainState.Success -> {
                 ReminderList(
-                    reminders = uiState.reminders,
+                    modifier = Modifier.fillMaxSize(),
+                    items = uiState.items,
                     onEditReminder = onEditReminder,
                     onDeleteReminder = onDeleteReminder,
-                    modifier = Modifier.fillMaxSize()
+                    onDeleteHistoryEntry = onDeleteHistoryEntry
                 )
             }
 
@@ -319,36 +317,60 @@ private fun MainStateContent(
 private fun DateRangePicker(
     selectedDate: ZonedDateTime,
     onSelectedDate: (ZonedDateTime) -> Unit,
-    selectableDates: List<ZonedDateTime>,
+    getWeekDatesForPage: (Int) -> List<ZonedDateTime>,
+    getWeekPageIndex: (ZonedDateTime) -> Int,
     isLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val initialPage = MainViewModel.INITIAL_PAGE
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { MainViewModel.PAGE_COUNT }
+    )
+
+    LaunchedEffect(selectedDate) {
+        val targetPage = getWeekPageIndex(selectedDate)
+        if (pagerState.currentPage != targetPage && !pagerState.isScrollInProgress) {
+            pagerState.animateScrollToPage(targetPage)
+        }
+    }
+
     Box(
         modifier = modifier
-            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
             .height(80.dp),
         contentAlignment = Alignment.Center
     ) {
         if (isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 color = MaterialTheme.colorScheme.primary,
                 trackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
             )
-
         } else {
-            Row(
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Top
-            ) {
-                selectableDates.forEach { date ->
-                    DateItem(
-                        date = date,
-                        isSelected = selectedDate.toLocalDate() == date.toLocalDate(),
-                        onClick = { onSelectedDate(date) },
-                        modifier = Modifier.weight(1f)
-                    )
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                pageSpacing = 16.dp
+            ) { page ->
+                val weekDates = remember(page) { getWeekDatesForPage(page) }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    weekDates.forEach { date ->
+                        DateItem(
+                            modifier = Modifier.weight(1f),
+                            date = date,
+                            isSelected = selectedDate.toLocalDate() == date.toLocalDate(),
+                            onClick = { onSelectedDate(date) }
+                        )
+                    }
                 }
             }
         }
@@ -366,19 +388,19 @@ private fun DateItem(
 
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
-            onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
+            onClick = onClick,
             shape = RoundedCornerShape(12.dp),
             color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
             contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
         ) {
             DateItemContent(
-                date = date,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                date = date
             )
         }
 
@@ -403,16 +425,16 @@ private fun DateItemContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            modifier = Modifier.alpha(0.6f),
             text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
                 .capitalizeFirst(),
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.alpha(0.6f)
+            style = MaterialTheme.typography.labelMedium
         )
 
         Text(
             text = date.dayOfMonth.toString(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }
@@ -458,7 +480,23 @@ private fun FilterButton(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SettingsButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppIconButton(
+        modifier = modifier,
+        onClick = onClick,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_settings),
+                contentDescription = null
+            )
+        }
+    )
+}
+
 @Composable
 private fun FilterBottomSheet(
     tags: List<Tag>,
@@ -499,6 +537,7 @@ private fun FilterBottomSheet(
                     val validTags = localSelectedTags.filter { localTag ->
                         tags.any { it.id == localTag.id }
                     }.toSet()
+
                     onApply(validTags, localSelectedPriority)
                 },
                 onClear = {
@@ -548,7 +587,7 @@ private fun PriorityFilterSection(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.editor_priority_label),
+        label = stringResource(R.string.reminder_priority_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_priority),
@@ -577,7 +616,7 @@ private fun TagFilterSection(
 ) {
     HorizontalSelector(
         modifier = modifier,
-        label = stringResource(R.string.editor_tag_label),
+        label = stringResource(R.string.reminder_tags_label),
         icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_tag),
@@ -610,22 +649,21 @@ private fun FilterBottomSheetActions(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         AppButton(
-            text = stringResource(R.string.common_filter_apply),
-            onClick = onApply,
             modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.action_apply),
+            onClick = onApply,
             variant = ButtonVariant.Primary
         )
 
         AppButton(
-            text = stringResource(R.string.common_filter_clear),
-            onClick = onClear,
             modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.action_clear),
+            onClick = onClear,
             variant = ButtonVariant.Secondary
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DeleteConfirmationBottomSheet(
     title: String,
@@ -636,8 +674,8 @@ private fun DeleteConfirmationBottomSheet(
 ) {
     AppBottomSheet(
         modifier = modifier,
-        title = title,
         onDismiss = onDismiss,
+        title = title,
         icon = {
             Icon(
                 modifier = Modifier.size(80.dp),
@@ -648,74 +686,64 @@ private fun DeleteConfirmationBottomSheet(
         },
         content = {
             Text(
-                text = message,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(0.7f)
+                    .alpha(0.7f),
+                text = message,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge
             )
         },
         actions = {
-            DeleteConfirmationActions(
-                onConfirm = onConfirm,
-                onDismiss = onDismiss,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AppButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.action_delete),
+                    onClick = onConfirm,
+                    variant = ButtonVariant.Danger
+                )
+
+                AppButton(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.action_cancel),
+                    onClick = onDismiss,
+                    variant = ButtonVariant.Secondary
+                )
+            }
         }
     )
 }
 
 @Composable
-private fun DeleteConfirmationActions(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.common_btn_delete),
-            onClick = onConfirm,
-            variant = ButtonVariant.Danger
-        )
-
-        AppButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(android.R.string.cancel),
-            onClick = onDismiss,
-            variant = ButtonVariant.Secondary
-        )
-    }
-}
-
-@Composable
 private fun ReminderList(
-    reminders: List<Reminder>,
+    items: List<ReminderItem>,
     onEditReminder: (Long) -> Unit,
     onDeleteReminder: (Reminder) -> Unit,
+    onDeleteHistoryEntry: (ReminderHistoryEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when (reminders) {
-        emptyList<Reminder>() -> EmptyState(modifier = modifier)
+    when (items) {
+        emptyList<ReminderItem>() -> EmptyState(modifier = modifier)
 
         else -> ReminderListContent(
             modifier = modifier,
-            reminders = reminders,
+            items = items,
             onEditReminder = onEditReminder,
-            onDeleteReminder = onDeleteReminder
+            onDeleteReminder = onDeleteReminder,
+            onDeleteHistoryEntry = onDeleteHistoryEntry
         )
     }
 }
 
 @Composable
 private fun ReminderListContent(
-    reminders: List<Reminder>,
+    items: List<ReminderItem>,
     onEditReminder: (Long) -> Unit,
     onDeleteReminder: (Reminder) -> Unit,
+    onDeleteHistoryEntry: (ReminderHistoryEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -723,74 +751,108 @@ private fun ReminderListContent(
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 80.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(reminders, key = { it.id }) { reminder ->
-            ReminderEntry(
-                reminder = reminder,
-                onEdit = { onEditReminder(reminder.id) },
-                onDelete = { onDeleteReminder(reminder) }
-            )
+        items(items, key = { "${it::class.simpleName}_${it.id}" }) { item ->
+            when (item) {
+                is ReminderItem.Active -> {
+                    ReminderItemCard(
+                        title = item.reminder.title,
+                        description = item.reminder.description,
+                        timeText = item.reminder.dateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        tags = item.reminder.tags,
+                        repeat = item.reminder.repeat,
+                        priority = item.reminder.priority,
+                        alpha = 1f,
+                        onClick = { onEditReminder(item.reminder.id) },
+                        onLongClick = { onDeleteReminder(item.reminder) }
+                    )
+                }
+
+                is ReminderItem.History -> {
+                    ReminderItemCard(
+                        title = item.entry.title,
+                        description = item.entry.description,
+                        timeText = item.entry.triggeredAt.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        tags = item.entry.tags,
+                        repeat = null,
+                        priority = item.entry.priority,
+                        alpha = 0.5f,
+                        onClick = null,
+                        onLongClick = { onDeleteHistoryEntry(item.entry) }
+                    )
+                }
+            }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ReminderEntry(
-    reminder: Reminder,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-    modifier: Modifier = Modifier
+private fun ReminderItemCard(
+    title: String,
+    description: String?,
+    timeText: String,
+    tags: List<Tag>,
+    repeat: ReminderRepeat?,
+    priority: ReminderPriority?,
+    modifier: Modifier = Modifier,
+    alpha: Float = 1f,
+    onClick: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .combinedClickable(
-                onClick = onEdit,
-                onLongClick = onDelete
+            .alpha(alpha)
+            .then(
+                if (onClick != null || onLongClick != null) {
+                    Modifier.combinedClickable(
+                        onClick = onClick ?: {},
+                        onLongClick = onLongClick ?: {}
+                    )
+                } else Modifier
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.inversePrimary.copy(alpha = 0.5f))
     ) {
-        ReminderEntryContent(
+        ReminderItemCardContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            title = reminder.title,
-            description = reminder.description,
-            date = reminder.dateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-            tags = reminder.tags,
-            repeat = reminder.repeat,
-            priority = reminder.priority
+            title = title,
+            description = description,
+            time = timeText,
+            tags = tags,
+            repeat = repeat,
+            priority = priority
         )
     }
 }
 
 @Composable
-private fun ReminderEntryContent(
+private fun ReminderItemCardContent(
     title: String,
     description: String?,
-    date: String,
+    time: String,
     tags: List<Tag>,
-    repeat: ReminderRepeat,
+    repeat: ReminderRepeat?,
     priority: ReminderPriority?,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = title,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.fillMaxWidth()
+            style = MaterialTheme.typography.titleMedium
         )
 
         description?.let { text ->
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth()
+                style = MaterialTheme.typography.bodyMedium
             )
         }
 
@@ -800,12 +862,12 @@ private fun ReminderEntryContent(
                 .padding(vertical = 12.dp)
         )
 
-        ReminderMetadata(
-            time = date,
+        ReminderItemMetadata(
+            modifier = Modifier.fillMaxWidth(),
+            time = time,
             tags = tags,
             repeat = repeat,
-            priority = priority,
-            modifier = Modifier.fillMaxWidth()
+            priority = priority
         )
     }
 }
@@ -816,20 +878,19 @@ private fun ReminderDate(
     modifier: Modifier = Modifier
 ) {
     Text(
+        modifier = modifier,
         text = date,
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.labelSmall
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ReminderMetadata(
+private fun ReminderItemMetadata(
     time: String,
     tags: List<Tag>,
-    repeat: ReminderRepeat,
+    repeat: ReminderRepeat?,
     priority: ReminderPriority?,
     modifier: Modifier = Modifier
 ) {
@@ -844,13 +905,16 @@ private fun ReminderMetadata(
             verticalAlignment = Alignment.CenterVertically
         ) {
             ReminderTimeChip(time = time)
-            ReminderRepeatChip(repeat = repeat)
+
+            repeat?.let {
+                ReminderRepeatChip(repeat = it)
+            }
         }
 
         Row(
             modifier = Modifier.padding(start = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             priority?.let {
                 ReminderPriorityIcon(priority = it)
@@ -873,8 +937,8 @@ private fun ReminderTimeChip(
         contentColor = MaterialTheme.colorScheme.primary
     ) {
         ReminderDate(
-            date = time,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            date = time
         )
     }
 }
@@ -904,10 +968,10 @@ private fun ReminderRepeatChip(
 
                 Text(
                     text = repeat.toShortString(),
-                    style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
         }
@@ -942,10 +1006,10 @@ private fun ReminderTagsInfo(
                 contentAlignment = Alignment.TopEnd
             ) {
                 CompactTagChip(
+                    modifier = Modifier.padding(end = if (remaining > 0) 12.dp else 0.dp),
                     text = tag.name,
                     icon = tag.icon,
-                    color = tag.color,
-                    modifier = Modifier.padding(end = if (remaining > 0) 12.dp else 0.dp)
+                    color = tag.color
                 )
 
                 if (remaining > 0) {
@@ -959,8 +1023,8 @@ private fun ReminderTagsInfo(
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = "+$remaining",
-                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp)
                             )
                         }
                     }
@@ -973,10 +1037,10 @@ private fun ReminderTagsInfo(
 @Composable
 private fun ReminderRepeat.toShortString(): String = when (this) {
     ReminderRepeat.Never -> ""
-    is ReminderRepeat.Daily -> stringResource(R.string.repeat_short_daily)
+    is ReminderRepeat.Daily -> stringResource(R.string.repeat_daily)
     is ReminderRepeat.Weekly -> {
-        if (days.isEmpty()) stringResource(R.string.repeat_short_weekly)
-        else if (days.size == 7) stringResource(R.string.repeat_short_daily)
+        if (days.isEmpty()) stringResource(R.string.repeat_weekly)
+        else if (days.size == 7) stringResource(R.string.repeat_daily)
         else if (days.size > 2) {
             "${days.size} ${stringResource(R.string.repeat_option_day).lowercase()}s"
         } else {
@@ -986,6 +1050,6 @@ private fun ReminderRepeat.toShortString(): String = when (this) {
         }
     }
 
-    is ReminderRepeat.Monthly -> stringResource(R.string.repeat_short_monthly)
-    is ReminderRepeat.Yearly -> stringResource(R.string.repeat_short_yearly)
+    is ReminderRepeat.Monthly -> stringResource(R.string.repeat_monthly)
+    is ReminderRepeat.Yearly -> stringResource(R.string.repeat_yearly)
 }

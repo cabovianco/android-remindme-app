@@ -47,8 +47,8 @@ fun <T> HorizontalSelector(
         ) {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = horizontalArrangement,
                 contentPadding = contentPadding,
+                horizontalArrangement = horizontalArrangement,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 items(options) {
@@ -95,8 +95,8 @@ fun SelectionCard(
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }
@@ -110,15 +110,15 @@ fun InputHeader(
 ) {
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(modifier = Modifier.size(20.dp)) { icon() }
 
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }

@@ -17,22 +17,20 @@ class AlarmScheduler @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) {
     fun schedule(reminder: Reminder) {
-        val intent = Intent(context, NotificationReceiver::class.java).apply {
-            putExtra("id", reminder.id)
-            putExtra("title", reminder.title)
-            putExtra("description", reminder.description)
-        }
+        val intent = Intent(context, NotificationReceiver::class.java)
+            .apply {
+                putExtra("id", reminder.id)
+            }
 
         scheduleAlarm(reminder.id.toInt(), reminder.dateTime, intent)
     }
 
-    fun scheduleSnooze(id: Long, title: String, description: String?, dateTime: ZonedDateTime) {
-        val intent = Intent(context, NotificationReceiver::class.java).apply {
-            action = NotificationReceiver.ACTION_TRIGGER_SNOOZE
-            putExtra("id", id)
-            putExtra("title", title)
-            putExtra("description", description)
-        }
+    fun scheduleSnooze(id: Long, dateTime: ZonedDateTime) {
+        val intent = Intent(context, NotificationReceiver::class.java)
+            .apply {
+                action = NotificationReceiver.ACTION_TRIGGER_SNOOZE
+                putExtra("id", id)
+            }
 
         scheduleAlarm(id.toInt(), dateTime, intent)
     }

@@ -33,7 +33,7 @@ fun WelcomeScreen(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(24.dp),
-                text = stringResource(R.string.welcome_btn_start),
+                text = stringResource(R.string.welcome_action_get_started),
                 onClick = onGetStartedClick
             )
         }
@@ -50,16 +50,16 @@ fun WelcomeScreen(
 private fun WelcomeContent(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(R.string.common_app_name),
+            text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.displayLarge.copy(fontFamily = cherryRegular)
         )
 
         Text(
-            text = stringResource(R.string.welcome_app_description),
+            text = stringResource(R.string.welcome_description),
             style = MaterialTheme.typography.bodyLarge
         )
     }

@@ -8,9 +8,12 @@ import com.cabovianco.remindme.data.local.converter.reminder.ReminderRepeatConve
 import com.cabovianco.remindme.data.local.converter.reminder.ZonedDateTimeConverter
 import com.cabovianco.remindme.data.local.converter.tag.TagColorConverter
 import com.cabovianco.remindme.data.local.converter.tag.TagIconConverter
+import com.cabovianco.remindme.data.local.converter.tag.TagListConverter
 import com.cabovianco.remindme.data.local.dao.ReminderDao
+import com.cabovianco.remindme.data.local.dao.ReminderHistoryDao
 import com.cabovianco.remindme.data.local.dao.TagDao
 import com.cabovianco.remindme.data.local.entity.ReminderEntity
+import com.cabovianco.remindme.data.local.entity.ReminderHistoryEntryEntity
 import com.cabovianco.remindme.data.local.entity.ReminderTagCrossRef
 import com.cabovianco.remindme.data.local.entity.TagEntity
 
@@ -18,9 +21,10 @@ import com.cabovianco.remindme.data.local.entity.TagEntity
     entities = [
         ReminderEntity::class,
         TagEntity::class,
-        ReminderTagCrossRef::class
+        ReminderTagCrossRef::class,
+        ReminderHistoryEntryEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(
@@ -28,9 +32,11 @@ import com.cabovianco.remindme.data.local.entity.TagEntity
     ReminderRepeatConverter::class,
     ReminderPriorityConverter::class,
     TagColorConverter::class,
-    TagIconConverter::class
+    TagIconConverter::class,
+    TagListConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
     abstract fun tagDao(): TagDao
+    abstract fun reminderHistoryDao(): ReminderHistoryDao
 }

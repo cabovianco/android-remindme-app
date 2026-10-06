@@ -14,14 +14,14 @@ fun AddReminderScreen(
     modifier: Modifier = Modifier
 ) {
     ReminderFormScreen(
-        title = stringResource(R.string.editor_title_add),
+        modifier = modifier,
+        title = stringResource(R.string.reminder_create_title),
         viewModel = viewModel,
         onBackClick = onBackClick,
         onSaveClick = {
             viewModel.addReminder()
             onBackClick()
         },
-        onCreateTag = onCreateTag,
-        modifier = modifier
+        onCreateTag = onCreateTag
     )
 }

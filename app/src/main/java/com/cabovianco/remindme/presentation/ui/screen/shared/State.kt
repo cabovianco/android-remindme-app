@@ -44,19 +44,19 @@ fun ErrorState(modifier: Modifier = Modifier) {
         modifier = modifier,
         title = {
             Text(
-                text = stringResource(R.string.main_error_state_title),
-                style = MaterialTheme.typography.headlineSmall,
+                text = stringResource(R.string.error_state_title),
+                color = MaterialTheme.colorScheme.error,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.error
+                style = MaterialTheme.typography.headlineSmall
             )
         },
         description = {
             Text(
-                text = stringResource(R.string.main_error_state_description),
-                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.alpha(0.7f),
+                text = stringResource(R.string.error_state_description),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.alpha(0.7f)
+                style = MaterialTheme.typography.bodyLarge
             )
         },
         icon = {
@@ -78,10 +78,10 @@ fun EmptyState(modifier: Modifier = Modifier) {
         modifier = modifier,
         title = {
             Text(
-                text = stringResource(R.string.main_empty_state_title),
-                style = MaterialTheme.typography.headlineSmall,
+                text = stringResource(R.string.empty_state_title),
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineSmall
             )
         },
         description = {
@@ -92,10 +92,10 @@ fun EmptyState(modifier: Modifier = Modifier) {
 
 @Composable
 private fun EmptyStateDescription() {
-    val description = stringResource(R.string.main_empty_state_description)
+    val description = stringResource(R.string.empty_state_description)
     val color = LocalContentColor.current.copy(alpha = 0.7f)
 
-    val parts = description.split("%1\$s", limit = 2)
+    val parts = description.split($$"%1$s", limit = 2)
     val before = parts.getOrElse(0) { "" }
     val after = parts.getOrElse(1) { "" }
 
@@ -124,9 +124,9 @@ private fun EmptyStateDescription() {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
+                    modifier = Modifier.size(16.dp),
                     painter = painterResource(R.drawable.ic_add),
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp),
                     tint = color
                 )
             }
@@ -135,10 +135,10 @@ private fun EmptyStateDescription() {
 
     Text(
         text = annotatedText,
-        inlineContent = inlineContent,
-        style = MaterialTheme.typography.bodyLarge,
+        color = color,
         textAlign = TextAlign.Center,
-        color = color
+        inlineContent = inlineContent,
+        style = MaterialTheme.typography.bodyLarge
     )
 }
 
@@ -178,7 +178,7 @@ private fun StatusLayout(
 ) {
     Box(
         modifier = modifier,
-        contentAlignment = BiasAlignment(0f, -0.4f)
+        contentAlignment = BiasAlignment(0f, -0.3f)
     ) {
         content()
     }

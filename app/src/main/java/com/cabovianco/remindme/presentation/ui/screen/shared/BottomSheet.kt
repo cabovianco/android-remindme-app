@@ -1,5 +1,6 @@
 package com.cabovianco.remindme.presentation.ui.screen.shared
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,9 +39,9 @@ fun AppBottomSheet(
         modifier = modifier,
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        dragHandle = null,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onSurface
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        dragHandle = null
     ) {
         Column(
             modifier = Modifier
@@ -60,32 +61,35 @@ fun AppBottomSheet(
                 shape = CircleShape
             )
 
-            icon?.let {
-                Box(contentAlignment = Alignment.Center) {
-                    it()
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                icon?.let {
+                    Box(contentAlignment = Alignment.Center) {
+                        it()
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+                title?.let {
+                    Text(
+                        text = it,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                }
 
-            title?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    content()
+                }
 
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                content()
-            }
-
-            actions?.let {
-                Spacer(modifier = Modifier.height(32.dp))
-                it()
+                actions?.let {
+                    it()
+                }
             }
         }
     }

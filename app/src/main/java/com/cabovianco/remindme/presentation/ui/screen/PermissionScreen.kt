@@ -120,8 +120,8 @@ private fun NotificationStep(
     }
 
     PermissionStepLayout(
-        type = PermissionStepType.Notifications,
         modifier = modifier,
+        type = PermissionStepType.Notifications,
         onButtonClick = {
             val status = permissionState.status
             if (!status.isGranted && !status.shouldShowRationale && notificationRequested) {
@@ -157,8 +157,8 @@ private fun AlarmStep(
     }
 
     PermissionStepLayout(
-        type = PermissionStepType.ExactAlarm,
         modifier = modifier,
+        type = PermissionStepType.ExactAlarm,
         onButtonClick = {
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
                 data = Uri.fromParts("package", context.packageName, null)
@@ -185,7 +185,7 @@ private fun PermissionStepLayout(
                     .fillMaxWidth()
                     .windowInsetsPadding(WindowInsets.navigationBars)
                     .padding(24.dp),
-                text = stringResource(R.string.permissions_btn_continue),
+                text = stringResource(R.string.permission_action_continue),
                 onClick = onButtonClick
             )
         }
@@ -195,29 +195,29 @@ private fun PermissionStepLayout(
                 .fillMaxSize()
                 .padding(it)
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
+                modifier = Modifier.size(128.dp),
                 painter = step.icon,
-                contentDescription = null,
-                modifier = Modifier.size(128.dp)
+                contentDescription = null
             )
 
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
                 text = step.title,
-                style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.headlineMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = step.description,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }
@@ -227,14 +227,14 @@ private fun PermissionStepLayout(
 private fun getPermissionStep(type: PermissionStepType): PermissionStep {
     return when (type) {
         PermissionStepType.Notifications -> PermissionStep(
-            title = stringResource(R.string.permissions_notif_title),
-            description = stringResource(R.string.permissions_notif_desc),
+            title = stringResource(R.string.permission_notification_title),
+            description = stringResource(R.string.permission_notification_description),
             icon = painterResource(R.drawable.illustration_notification)
         )
 
         PermissionStepType.ExactAlarm -> PermissionStep(
-            title = stringResource(R.string.permissions_alarm_title),
-            description = stringResource(R.string.permissions_alarm_desc),
+            title = stringResource(R.string.permission_alarm_title),
+            description = stringResource(R.string.permission_alarm_description),
             icon = painterResource(R.drawable.illustration_exact_alarm)
         )
     }

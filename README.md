@@ -13,6 +13,8 @@ It ensures that all data stays on your device, requiring no accounts or internet
 - Organize reminders with customizable tags.
 - Quickly find reminders using tag filters.
 - Snooze notifications for later.
+- Back up and restore your reminders and tags easily.
+- Keep track of triggered reminders with history logs and configurable retention settings.
 - Keep all your reminders stored locally.
 - Clean and distraction-free interface.
 
@@ -23,6 +25,7 @@ It ensures that all data stays on your device, requiring no accounts or internet
 | ![Screenshot-1](assets/img/Screenshot-1.jpg) | ![Screenshot-2](assets/img/Screenshot-2.jpg) |
 | ![Screenshot-3](assets/img/Screenshot-3.jpg) | ![Screenshot-4](assets/img/Screenshot-4.jpg) |
 | ![Screenshot-5](assets/img/Screenshot-5.jpg) | ![Screenshot-6](assets/img/Screenshot-6.jpg) |
+| ![Screenshot-7](assets/img/Screenshot-7.jpg) |                                              |
 
 ## Installation
 
@@ -59,6 +62,7 @@ The app follows **Clean Architecture** principles, organized into the following 
 com.cabovianco.remindme
 ├── data/                   # Implementation of data sources
 │   ├── alarm/              # Alarm scheduling (AlarmManager)
+│   ├── backup/             # Backup and restore serialization
 │   ├── local/              # Room database and Preferences DataStore
 │   └── repository/         # Repository implementations
 │
@@ -113,6 +117,19 @@ Join table for the many-to-many relationship between reminders and tags.
 - **Fields:**
     - `reminderId`: Foreign Key to `reminders.id`.
     - `tagId`: Foreign Key to `tags.id`.
+
+### `reminder_entries` Table
+
+Stores history logs for triggered reminders.
+
+- **Fields:**
+    - `id`: Primary Key (Long, Auto-generated).
+    - `reminderId`: ID of the original reminder.
+    - `title`: The title of the triggered task or event.
+    - `description`: Optional extra details.
+    - `triggeredAt`: Timestamp when the reminder was triggered (stored as ISO Zoned Date Time).
+    - `priority`: Reminder priority.
+    - `tags`: Associated tags (stored as JSON string).
 
 ## License
 

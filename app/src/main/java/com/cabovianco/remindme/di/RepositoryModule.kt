@@ -1,11 +1,15 @@
 package com.cabovianco.remindme.di
 
+import com.cabovianco.remindme.data.repository.BackupRepositoryImpl
 import com.cabovianco.remindme.data.repository.OnboardingRepositoryImpl
 import com.cabovianco.remindme.data.repository.PermissionRepositoryImpl
+import com.cabovianco.remindme.data.repository.ReminderHistoryRepositoryImpl
 import com.cabovianco.remindme.data.repository.ReminderRepositoryImpl
 import com.cabovianco.remindme.data.repository.TagRepositoryImpl
+import com.cabovianco.remindme.domain.repository.BackupRepository
 import com.cabovianco.remindme.domain.repository.OnboardingRepository
 import com.cabovianco.remindme.domain.repository.PermissionRepository
+import com.cabovianco.remindme.domain.repository.ReminderHistoryRepository
 import com.cabovianco.remindme.domain.repository.ReminderRepository
 import com.cabovianco.remindme.domain.repository.TagRepository
 import dagger.Binds
@@ -40,4 +44,16 @@ abstract class RepositoryModule {
     abstract fun bindTagRepository(
         impl: TagRepositoryImpl
     ): TagRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBackupRepository(
+        impl: BackupRepositoryImpl
+    ): BackupRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReminderHistoryRepository(
+        impl: ReminderHistoryRepositoryImpl
+    ): ReminderHistoryRepository
 }
